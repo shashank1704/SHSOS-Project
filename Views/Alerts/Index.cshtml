@@ -1,0 +1,169 @@
+@model IEnumerable<SHSOS.Models.Alert>
+
+@{
+    ViewData["Title"] = "Alert Center";
+}
+
+<div class="fade-in">
+    <h1 style="font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2rem;">
+        🔔 Alert Center
+    </h1>
+
+    <!-- Alert Summary -->
+    <div class="row mb-4">
+        @foreach (var item in ViewBag.AlertSummary)
+        {
+            var badgeClass = item.Key == "Critical" ? "badge-critical" : 
+                           item.Key == "High" ? "badge-high" : 
+                           item.Key == "Medium" ? "badge-medium" : "badge-low";
+            
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-label">@item.Key Alerts</div>
+                    <div class="metric-value">@item.Value</div>
+                    <span class="@badgeClass">Active</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label class="form-label">Severity</label>
+                    <select name="severity" class="form-control">
+                        <option value="">All Severities</option>
+                        <option value="Critical" selected="@(ViewBag.Severity == "Critical")">Critical</option>
+                        <option value="High" selected="@(ViewBag.Severity == "High")">High</option>
+                        <option value="Medium" selected="@(ViewBag.Severity == "Medium")">Medium</option>
+                        <option value="Low" selected="@(ViewBag.Severity == "Low")">Low</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label class="form-label">Status</label>
+                    <select name="resolved" class="form-control">
+                        <option value="">Unresolved Only</option>
+                        <option value="true">Resolved Only</option>
+                        <option value="false">All Alerts</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">🔍 Filter</button>
+                <form asp-action="CheckThresholds" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-warning">🔄 Check Thresholds</button>
+                </form>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alerts List -->
+    <div class="card">
+        <div class="card-header">Alert Records</div>
+        <div class="card-body" style="padding: 0;">
+            @if (Model.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Created</th>
+                            <th>Type</th>
+                            <th>Severity</th>
+                            <th>Department</th>
+                            <th>Message</th>
+                            <th>Threshold</th>
+                            <th>Actual</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var alert in Model)
+                        {
+                            var rowClass = alert.IsResolved ? "opacity: 0.6;" : "";
+                            var severityBadge = alert.Severity == "Critical" ? "badge-critical" : 
+                                              alert.Severity == "High" ? "badge-high" : 
+                                              alert.Severity == "Medium" ? "badge-medium" : "badge-low";
+                            
+                            <tr style="@rowClass">
+                                <td>@alert.CreatedAt.ToString("MMM dd, HH:mm")</td>
+                                <td>
+                                    @if (alert.AlertType == "Energy")
+                                    {
+                                        <span>⚡ @alert.AlertType</span>
+                                    }
+                                    else if (alert.AlertType == "Water")
+                                    {
+                                        <span>💧 @alert.AlertType</span>
+                                    }
+                                    else
+                                    {
+                                        <span>♻️ @alert.AlertType</span>
+                                    }
+                                </td>
+                                <td><span class="@severityBadge">@alert.Severity</span></td>
+                                <td>@alert.Departments.DepartmentName</td>
+                                <td><small>@alert.Message</small></td>
+                                <td>@alert.ThresholdValue</td>
+                                <td><strong>@alert.ActualValue</strong></td>
+                                <td>
+                                    @if (alert.IsResolved)
+                                    {
+                                        <span class="badge-low">✓ Resolved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-high">⚠️ Active</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <a asp-action="Details" asp-route-id="@alert.AlertID" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View</a>
+                                        @if (!alert.IsResolved)
+                                        {
+                                            <button onclick="resolveAlert(@alert.AlertID)" class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.875rem;">✓ Resolve</button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-success" style="margin: 2rem;">
+                    ✓ No alerts found matching your filters. All systems operating normally!
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function resolveAlert(alertId) {
+            const notes = prompt('Resolution Notes:');
+            if (notes === null) return;
+            
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Alerts/Resolve/' + alertId;
+            
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '__RequestVerificationToken';
+            tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            
+            const notesInput = document.createElement('input');
+            notesInput.type = 'hidden';
+            notesInput.name = 'resolutionNotes';
+            notesInput.value = notes;
+            
+            form.appendChild(tokenInput);
+            form.appendChild(notesInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+}

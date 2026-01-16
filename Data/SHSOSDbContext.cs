@@ -1,0 +1,73 @@
+﻿using Microsoft.EntityFrameworkCore;
+using SHSOS.Models;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+
+namespace SHSOS.Data
+{
+    public class SHSOSDbContext : DbContext
+    {
+        public SHSOSDbContext(DbContextOptions<SHSOSDbContext> options)
+            : base(options)
+        {
+        }
+
+        // ===== DbSets (Tables) =====
+        public DbSet<hospitals> hospitals { get; set; }
+        public DbSet<Departments> Departments { get; set; }
+        public DbSet<WasteManagement> WasteManagement { get; set; }
+        public DbSet<EnergyConsumption> EnergyConsumption { get; set; }
+        public DbSet<WaterConsumption> WaterConsumption { get; set; }
+        public DbSet<Alert> Alert { get; set; }
+        public DbSet<ResourceThreshold> ResourceThreshold { get; set; }
+        public DbSet<SustainabilityMetrics> SustainabilityMetrics { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // ===== Hospital → Departments (1:M) =====
+            modelBuilder.Entity<Departments>()
+                .HasOne(d => d.hospitals)
+                .WithMany(h => h.Departments)
+                .HasForeignKey(d => d.HospitalID);
+
+            // ===== Departments → WasteManagement (1:M) =====
+            modelBuilder.Entity<WasteManagement>()
+                .HasOne(w => w.Departments)
+                .WithMany(d => d.WasteManagement)
+                .HasForeignKey(w => w.DepartmentID);
+
+            // ===== Departments → EnergyConsumption (1:M) =====
+            modelBuilder.Entity<EnergyConsumption>()
+                .HasOne(e => e.Departments)
+                .WithMany(d => d.EnergyConsumption)
+                .HasForeignKey(e => e.DepartmentID);
+
+            // ===== Departments → WaterConsumption (1:M) =====
+            modelBuilder.Entity<WaterConsumption>()
+                .HasOne(w => w.Departments)
+                .WithMany(d => d.WaterConsumption)
+                .HasForeignKey(w => w.DepartmentID);
+
+            // ===== Departments → Alert (1:M) =====
+            modelBuilder.Entity<Alert>()
+                .HasOne(a => a.Departments)
+                .WithMany()
+                .HasForeignKey(a => a.DepartmentID);
+
+            // ===== Departments → ResourceThreshold (1:M) =====
+            modelBuilder.Entity<ResourceThreshold>()
+                .HasOne(rt => rt.Departments)
+                .WithMany()
+                .HasForeignKey(rt => rt.DepartmentID);
+
+            // ===== Departments → SustainabilityMetrics (1:M) =====
+            modelBuilder.Entity<SustainabilityMetrics>()
+                .HasOne(sm => sm.Departments)
+                .WithMany()
+                .HasForeignKey(sm => sm.DepartmentID);
+        }
+    }
+}
+

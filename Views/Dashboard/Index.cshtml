@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Sustainability Dashboard";
+}
+
+<div class="fade-in">
+    <!-- Hero Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 3rem; color: white; text-align: center;">
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">🌱 Smart Hospital Sustainability Dashboard</h1>
+                <p style="font-size: 1.125rem; opacity: 0.9;">Real-time monitoring • Smart analytics • Environmental impact tracking</p>
+                <div style="margin-top: 1.5rem;">
+                    <span class="badge" style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; margin: 0 0.5rem;">
+                        🎯 Sustainability Score: @ViewBag.OverallSustainability/100
+                    </span>
+                    <span class="badge" style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; margin: 0 0.5rem;">
+                        💰 Predicted Monthly Cost: ₹@(Math.Round((decimal)ViewBag.PredictedMonthlyCost, 2))
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-icon energy">⚡</div>
+                <div class="metric-label">Energy Consumption</div>
+                <div class="metric-value">@ViewBag.TotalEnergy</div>
+                <small style="color: #6c757d;">kWh • ₹@ViewBag.TotalEnergyCost</small>
+                <div style="margin-top: 0.5rem; font-size: 0.875rem;">
+                    <span style="color: #f39c12;">⚡ Peak: @ViewBag.PeakEnergy kWh</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-icon water">💧</div>
+                <div class="metric-label">Water Consumption</div>
+                <div class="metric-value">@ViewBag.TotalWater</div>
+                <small style="color: #6c757d;">Liters</small>
+                <div style="margin-top: 0.5rem;">
+                    @if (ViewBag.LeakageCount > 0)
+                    {
+                        <span class="badge-critical">🚨 @ViewBag.LeakageCount Leakages!</span>
+                    }
+                    else
+                    {
+                        <span class="badge-low">✓ No Leakages</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-icon waste">♻️</div>
+                <div class="metric-label">Waste Generated</div>
+                <div class="metric-value">@ViewBag.TotalWaste</div>
+                <small style="color: #6c757d;">Kg • ₹@ViewBag.WasteCost</small>
+                <div style="margin-top: 0.5rem;">
+                    @if (ViewBag.NonCompliantWaste > 0)
+                    {
+                        <span class="badge-high">⚠️ @ViewBag.NonCompliantWaste Non-Compliant</span>
+                    }
+                    else
+                    {
+                        <span class="badge-low">✓ Compliant</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-icon carbon">🌍</div>
+                <div class="metric-label">Carbon Emissions</div>
+                <div class="metric-value">@ViewBag.TotalCarbon</div>
+                <small style="color: #6c757d;">Kg CO₂</small>
+                <div style="margin-top: 0.5rem; font-size: 0.875rem;">
+                    <span style="color: #6c5ce7;">📅 This Month: @ViewBag.MonthlyCarbon kg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">📈 Energy Consumption Trend (Last 30 Days)</div>
+                <div class="card-body">
+                    <canvas id="energyTrendChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">🏥 Sustainability Scores by Department</div>
+                <div class="card-body">
+                    @foreach (var item in ViewBag.SustainabilityScores)
+                    {
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">@item.Key</span>
+                                <span style="font-size: 0.875rem; color: #667eea;">@Math.Round(item.Value, 1)/100</span>
+                            </div>
+                            <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: @(item.Value)%;"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts & Department Comparison -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">🔔 Recent Alerts</div>
+                <div class="card-body">
+                    @if (ViewBag.ActiveAlerts.Count > 0)
+                    {
+                        foreach (var alert in ViewBag.ActiveAlerts)
+                        {
+                            var alertClass = alert.Severity == "Critical" ? "alert-critical" : (alert.Severity == "High" ? "alert-high" : "alert-success");
+                            <div class="@alertClass" style="margin-bottom: 1rem;">
+                                <div>
+                                    <strong>@alert.AlertType</strong> - @alert.Severity
+                                    <br />
+                                    <small>@alert.Message</small>
+                                    <br />
+                                    <small style="opacity: 0.7;">@alert.CreatedAt.ToString("MMM dd, HH:mm")</small>
+                                </div>
+                            </div>
+                        }
+                        <a asp-controller="Alerts" asp-action="Index" class="btn btn-outline" style="width: 100%; justify-content: center;">View All Alerts</a>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success">
+                            ✓ No active alerts. All systems operating normally!
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">📊 Quick Actions</div>
+                <div class="card-body">
+                    <div style="display: grid; gap: 1rem;">
+                        <a asp-controller="Energy" asp-action="Create" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                            ⚡ Add Energy Reading
+                        </a>
+                        <a asp-controller="Water" asp-action="Create" class="btn btn-success" style="width: 100%; justify-content: center;">
+                            💧 Add Water Reading
+                        </a>
+                        <a asp-controller="Waste" asp-action="Create" class="btn btn-warning" style="width: 100%; justify-content: center;">
+                            ♻️ Add Waste Record
+                        </a>
+                        <a asp-controller="Analytics" asp-action="Index" class="btn btn-outline" style="width: 100%; justify-content: center;">
+                            📈 View Detailed Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anomalies -->
+    @if (ViewBag.Anomalies.Count > 0)
+    {
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">⚠️ Recent Anomalies (Last 7 Days)</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                    <th>Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var anomaly in ViewBag.Anomalies.Take(5))
+                                {
+                                    <tr>
+                                        <td>@anomaly.Item1.ToString("MMM dd, yyyy")</td>
+                                        <td><span class="badge-medium">@anomaly.Item2</span></td>
+                                        <td>@Math.Round(anomaly.Item3, 2)</td>
+                                        <td>@anomaly.Item4</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Energy Trend Chart
+        const energyTrendData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.EnergyTrendData));
+        
+        const ctx = document.getElementById('energyTrendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: energyTrendData.map(d => new Date(d.Date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [{
+                    label: 'Energy Consumed (kWh)',
+                    data: energyTrendData.map(d => d.Consumption),
+                    borderColor: 'rgb(102, 126, 234)',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgb(102, 126, 234)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

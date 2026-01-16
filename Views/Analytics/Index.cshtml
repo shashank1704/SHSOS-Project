@@ -1,0 +1,251 @@
+@{
+    ViewData["Title"] = "Analytics & Reports";
+}
+
+<div class="fade-in">
+    <h1 style="font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2rem;">
+        📈 Analytics & Reports
+    </h1>
+
+    <!-- Cost Overview -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-icon energy">💰</div>
+                <div class="metric-label">Total Energy Cost</div>
+                <div class="metric-value">₹@Math.Round((decimal)ViewBag.TotalEnergyCost, 2)</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-icon waste">💸</div>
+                <div class="metric-label">Total Waste Cost</div>
+                <div class="metric-value">₹@Math.Round((decimal)ViewBag.TotalWasteCost, 2)</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-icon carbon">🌍</div>
+                <div class="metric-label">Carbon Footprint</div>
+                <div class="metric-value">@Math.Round((decimal)ViewBag.TotalCarbon, 1)</div>
+                <small style="color: #6c757d;">Kg CO₂</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">⚡ Energy by Department</div>
+                <div class="card-body">
+                    <canvas id="energyDeptChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">💧 Water by Department</div>
+                <div class="card-body">
+                    <canvas id="waterDeptChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">♻️ Waste by Category</div>
+                <div class="card-body">
+                    <canvas id="wasteCategoryChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">🎯 Sustainability Scores</div>
+                <div class="card-body">
+                    <canvas id="sustainabilityChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Predictions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">🔮 Predicted Energy Trend (Next 7 Days)</div>
+                <div class="card-body">
+                    <canvas id="predictionChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anomalies -->
+    @if (ViewBag.Anomalies.Count > 0)
+    {
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">⚠️ Detected Anomalies (Last 30 Days)</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                    <th>Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var anomaly in ViewBag.Anomalies.Take(10))
+                                {
+                                    <tr>
+                                        <td>@anomaly.Item1.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            @if (anomaly.Item2 == "Energy")
+                                            {
+                                                <span class="badge" style="background: #fdcb6e; color: #2d3436;">⚡ @anomaly.Item2</span>
+                                            }
+                                            else if (anomaly.Item2 == "Water")
+                                            {
+                                                <span class="badge" style="background: #74b9ff; color: #2d3436;">💧 @anomaly.Item2</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge" style="background: #fd79a8; color: #2d3436;">♻️ @anomaly.Item2</span>
+                                            }
+                                        </td>
+                                        <td><strong>@Math.Round(anomaly.Item3, 2)</strong></td>
+                                        <td>@anomaly.Item4</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        const energyByDept = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.EnergyByDepartment));
+        const waterByDept = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.WaterByDepartment));
+        const wasteByCategory = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.WasteByCategory));
+        const sustainabilityData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.SustainabilityData));
+        const predictedEnergy = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.PredictedEnergy));
+
+        // Energy by Department
+        new Chart(document.getElementById('energyDeptChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(energyByDept),
+                datasets: [{
+                    label: 'Energy (kWh)',
+                    data: Object.values(energyByDept),
+                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                    borderColor: 'rgb(102, 126, 234)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Water by Department
+        new Chart(document.getElementById('waterDeptChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(waterByDept),
+                datasets: [{
+                    label: 'Water (Liters)',
+                    data: Object.values(waterByDept),
+                    backgroundColor: 'rgba(116, 185, 255, 0.8)',
+                    borderColor: 'rgb(116, 185, 255)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Waste by Category
+        new Chart(document.getElementById('wasteCategoryChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(wasteByCategory),
+                datasets: [{
+                    data: Object.values(wasteByCategory),
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#43cea2']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Sustainability Scores
+        new Chart(document.getElementById('sustainabilityChart'), {
+            type: 'radar',
+            data: {
+                labels: Object.keys(sustainabilityData),
+                datasets: [{
+                    label: 'Sustainability Score',
+                    data: Object.values(sustainabilityData),
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    borderColor: 'rgb(102, 126, 234)',
+                    pointBackgroundColor: 'rgb(102, 126, 234)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(102, 126, 234)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Predictions
+        new Chart(document.getElementById('predictionChart'), {
+            type: 'line',
+            data: {
+                labels: predictedEnergy.map(d => new Date(d.Date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [{
+                    label: 'Predicted Energy (kWh)',
+                    data: predictedEnergy.map(d => d.PredictedConsumption),
+                    borderColor: 'rgb(243, 156, 18)',
+                    backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+}

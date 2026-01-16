@@ -1,0 +1,117 @@
+@model IEnumerable<SHSOS.Models.EnergyConsumption>
+
+@{
+    ViewData["Title"] = "Energy Management";
+}
+
+<div class="fade-in">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 style="font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                ⚡ Energy Management
+            </h1>
+            <p style="color: var(--text-secondary);">Monitor and manage energy consumption across all departments</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Total Consumption</div>
+                <div class="metric-value">@ViewBag.TotalUnits</div>
+                <small style="color: #6c757d;">kWh</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Total Cost</div>
+                <div class="metric-value">₹@Math.Round((decimal)ViewBag.TotalCost, 2)</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Carbon Emissions</div>
+                <div class="metric-value">@Math.Round((decimal)ViewBag.TotalCarbon, 1)</div>
+                <small style="color: #6c757d;">Kg CO₂</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Peak Usage</div>
+                <div class="metric-value">@ViewBag.PeakUsage</div>
+                <small style="color: #6c757d;">kWh</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Actions -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label class="form-label">Department</label>
+                    <select name="departmentId" class="form-control">
+                        <option value="">All Departments</option>
+                        @foreach (var dept in ViewBag.Departments)
+                        {
+                            <option value="@dept.Value" selected="@(dept.Value == ViewBag.SelectedDepartment?.ToString())">@dept.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="startDate" class="form-control" value="@ViewBag.StartDate" />
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="endDate" class="form-control" value="@ViewBag.EndDate" />
+                </div>
+                <button type="submit" class="btn btn-primary">🔍 Filter</button>
+                <a asp-action="Create" class="btn btn-success">➕ Add Reading</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card">
+        <div class="card-header">Energy Consumption Records</div>
+        <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Department</th>
+                        <th>Units (kWh)</th>
+                        <th>Cost</th>
+                        <th>Category</th>
+                        <th>Peak Hour</th>
+                        <th>Carbon (Kg)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ConsumptionDate.ToString("MMM dd, yyyy")</td>
+                            <td>@item.Departments.DepartmentName</td>
+                            <td><strong>@item.UnitsConsumedkWh</strong></td>
+                            <td>₹@item.TotalCost</td>
+                            <td><span class="badge-medium">@item.UsageCategory</span></td>
+                            <td>@(item.PeakHourFlag ? "⚡ Yes" : "No")</td>
+                            <td>@item.CarbonEmissionsKg</td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a asp-action="Details" asp-route-id="@item.EnergyConsumptionID" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View</a>
+                                    <a asp-action="Edit" asp-route-id="@item.EnergyConsumptionID" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.EnergyConsumptionID" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
