@@ -1,0 +1,131 @@
+@model IEnumerable<SHSOS.Models.WasteManagement>
+
+@{
+    ViewData["Title"] = "Waste Management";
+}
+
+<div class="fade-in">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 style="font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                🗑️ Waste Management
+            </h1>
+            <p style="color: var(--text-secondary);">Track and manage waste generation, disposal, and compliance</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Total Waste Weight</div>
+                <div class="metric-value">@ViewBag.TotalWeight</div>
+                <small style="color: #6c757d;">kg</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Total Disposal Cost</div>
+                <div class="metric-value">₹@Math.Round((decimal)ViewBag.TotalDisposalCost, 2)</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Non-Compliant Records</div>
+                <div class="metric-value" style="color: @(ViewBag.NonCompliantCount > 0 ? "#ef4444" : "#10b981");">@ViewBag.NonCompliantCount</div>
+                <small style="color: #6c757d;">@(ViewBag.NonCompliantCount > 0 ? "⚠️ Needs Attention" : "✓ All Clear")</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Total Records</div>
+                <div class="metric-value">@Model.Count()</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Actions -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label class="form-label">Department</label>
+                    <select name="departmentId" class="form-control">
+                        <option value="">All Departments</option>
+                        @foreach (var dept in ViewBag.Departments)
+                        {
+                            <option value="@dept.Value" selected="@(dept.Value == ViewBag.SelectedDepartment?.ToString())">@dept.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
+                    <label class="form-label">Waste Category</label>
+                    <select name="wasteCategory" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="General" selected="@(ViewBag.WasteCategory == "General")">General</option>
+                        <option value="Biomedical" selected="@(ViewBag.WasteCategory == "Biomedical")">Biomedical</option>
+                        <option value="Hazardous" selected="@(ViewBag.WasteCategory == "Hazardous")">Hazardous</option>
+                        <option value="Recyclable" selected="@(ViewBag.WasteCategory == "Recyclable")">Recyclable</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">🔍 Filter</button>
+                <a asp-action="Create" class="btn btn-success">➕ Add Waste Record</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card">
+        <div class="card-header">Waste Management Records</div>
+        <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Collection Date</th>
+                        <th>Department</th>
+                        <th>Waste Type</th>
+                        <th>Category</th>
+                        <th>Weight (kg)</th>
+                        <th>Disposal Method</th>
+                        <th>Total Cost</th>
+                        <th>Compliance</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="@(item.ComplianceStatus != "Compliant" ? "background-color: rgba(239, 68, 68, 0.1);" : "")">
+                            <td>@item.CollectionDate.ToString("MMM dd, yyyy")</td>
+                            <td>@item.Departments.DepartmentName</td>
+                            <td>@item.WasteType</td>
+                            <td>
+                                <span class="badge-info">@item.WasteCategory</span>
+                            </td>
+                            <td><strong>@item.WasteWeight</strong></td>
+                            <td>@item.DisposalMethod</td>
+                            <td>₹@Math.Round(item.DisposalCost + item.DisinfectionCost, 2)</td>
+                            <td>
+                                @if (item.ComplianceStatus == "Compliant")
+                                {
+                                    <span class="badge-low">✓ Compliant</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-high">⚠️ @item.ComplianceStatus</span>
+                                }
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a asp-action="Details" asp-route-id="@item.WasteRecordID" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View</a>
+                                    <a asp-action="Edit" asp-route-id="@item.WasteRecordID" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.WasteRecordID" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

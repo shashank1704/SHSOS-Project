@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj": {}
+    "C:\\Shashank Projects\\Data\\SHSOS\\SHSOS.csproj": {}
   },
   "projects": {
-    "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj": {
+    "C:\\Shashank Projects\\Data\\SHSOS\\SHSOS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj",
+        "projectUniqueName": "C:\\Shashank Projects\\Data\\SHSOS\\SHSOS.csproj",
         "projectName": "SHSOS",
-        "projectPath": "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj",
+        "projectPath": "C:\\Shashank Projects\\Data\\SHSOS\\SHSOS.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\obj\\",
+        "outputPath": "C:\\Shashank Projects\\Data\\SHSOS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
