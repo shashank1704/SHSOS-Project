@@ -25,6 +25,7 @@ namespace SHSOS.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.HasDefaultSchema("snot");
 
             // ===== Hospital → Departments (1:M) =====
             modelBuilder.Entity<Departments>()

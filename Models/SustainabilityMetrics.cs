@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SHSOS.Models
 {
+    
+[Table("SustainabilityMetrics", Schema = "snot")]
     public class SustainabilityMetrics
     {
         [Key]

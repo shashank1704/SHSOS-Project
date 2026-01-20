@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SHSOS.Models
 {
+    
+[Table("ResourceThreshold", Schema = "snot")]
     public class ResourceThreshold
     {
         [Key]

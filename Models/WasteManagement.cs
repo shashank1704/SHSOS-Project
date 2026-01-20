@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SHSOS.Models
 {
+    [Table("WasteManagement", Schema = "snot")]
     public class WasteManagement
     {
         [Key]

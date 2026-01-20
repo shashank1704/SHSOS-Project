@@ -17,6 +17,7 @@ namespace SHSOS.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("snot")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -72,7 +73,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("Alert");
+                    b.ToTable("Alert", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.Departments", b =>
@@ -100,7 +101,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("HospitalID");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.EnergyConsumption", b =>
@@ -149,7 +150,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("EnergyConsumption");
+                    b.ToTable("EnergyConsumption", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.ResourceThreshold", b =>
@@ -197,7 +198,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("ResourceThreshold");
+                    b.ToTable("ResourceThreshold", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.SustainabilityMetrics", b =>
@@ -265,7 +266,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("SustainabilityMetrics");
+                    b.ToTable("SustainabilityMetrics", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.WasteManagement", b =>
@@ -318,7 +319,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("WasteManagement");
+                    b.ToTable("WasteManagement", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.WaterConsumption", b =>
@@ -369,7 +370,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("WaterConsumption");
+                    b.ToTable("WaterConsumption", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.hospitals", b =>
@@ -390,7 +391,7 @@ namespace SHSOS.Migrations
 
                     b.HasKey("HospitalID");
 
-                    b.ToTable("hospitals");
+                    b.ToTable("hospitals", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.Alert", b =>

@@ -12,18 +12,72 @@ using SHSOS.Data;
 namespace SHSOS.Migrations
 {
     [DbContext(typeof(SHSOSDbContext))]
-    [Migration("20260116064629_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260116125011_InitialCreate_SnotSchema")]
+    partial class InitialCreate_SnotSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("snot")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("SHSOS.Models.Alert", b =>
+                {
+                    b.Property<int>("AlertID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AlertID"));
+
+                    b.Property<decimal>("ActualValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("AlertType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsResolved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ResolutionNotes")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("ThresholdValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("AlertID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("Alert", "snot");
+                });
 
             modelBuilder.Entity("SHSOS.Models.Departments", b =>
                 {
@@ -50,7 +104,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("HospitalID");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.EnergyConsumption", b =>
@@ -99,7 +153,123 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("EnergyConsumption");
+                    b.ToTable("EnergyConsumption", "snot");
+                });
+
+            modelBuilder.Entity("SHSOS.Models.ResourceThreshold", b =>
+                {
+                    b.Property<int>("ThresholdID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ThresholdID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("CriticalThreshold")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ResourceType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ThresholdName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("WarningThreshold")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ThresholdID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("ResourceThreshold", "snot");
+                });
+
+            modelBuilder.Entity("SHSOS.Models.SustainabilityMetrics", b =>
+                {
+                    b.Property<int>("MetricID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MetricID"));
+
+                    b.Property<DateTime>("CalculationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("CarbonReductionPercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ComplianceViolations")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("CostSavingsPercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("EnergyEfficiencyScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("EnergyPerBed")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PotentialSavings")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Recommendations")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("SustainabilityScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalCarbonEmissionKg")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WasteManagementScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WastePerBed")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WaterEfficiencyScore")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WaterPerBed")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("MetricID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("SustainabilityMetrics", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.WasteManagement", b =>
@@ -152,7 +322,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("WasteManagement");
+                    b.ToTable("WasteManagement", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.WaterConsumption", b =>
@@ -203,7 +373,7 @@ namespace SHSOS.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("WaterConsumption");
+                    b.ToTable("WaterConsumption", "snot");
                 });
 
             modelBuilder.Entity("SHSOS.Models.hospitals", b =>
@@ -224,7 +394,18 @@ namespace SHSOS.Migrations
 
                     b.HasKey("HospitalID");
 
-                    b.ToTable("hospitals");
+                    b.ToTable("hospitals", "snot");
+                });
+
+            modelBuilder.Entity("SHSOS.Models.Alert", b =>
+                {
+                    b.HasOne("SHSOS.Models.Departments", "Departments")
+                        .WithMany()
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Departments");
                 });
 
             modelBuilder.Entity("SHSOS.Models.Departments", b =>
@@ -242,6 +423,28 @@ namespace SHSOS.Migrations
                 {
                     b.HasOne("SHSOS.Models.Departments", "Departments")
                         .WithMany("EnergyConsumption")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Departments");
+                });
+
+            modelBuilder.Entity("SHSOS.Models.ResourceThreshold", b =>
+                {
+                    b.HasOne("SHSOS.Models.Departments", "Departments")
+                        .WithMany()
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Departments");
+                });
+
+            modelBuilder.Entity("SHSOS.Models.SustainabilityMetrics", b =>
+                {
+                    b.HasOne("SHSOS.Models.Departments", "Departments")
+                        .WithMany()
                         .HasForeignKey("DepartmentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
