@@ -3,69 +3,101 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Smart Hospital Sustainability System</title>
+    <title>@ViewData["Title"] - SHSOS</title>
     <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; width: 100%;">
-            <a class="navbar-brand" asp-controller="Dashboard" asp-action="Index">
-                🌱 SHSOS
-            </a>
-            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
-                    📊 Dashboard
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="wrapper">
+            <aside class="sidebar">
+                <a class="sidebar-brand" asp-controller="Dashboard" asp-action="Index">
+                    <span>🌱</span> SHSOS
                 </a>
-                <a class="nav-link" asp-controller="Energy" asp-action="Index">
-                    ⚡ Energy
-                </a>
-                <a class="nav-link" asp-controller="Water" asp-action="Index">
-                    💧 Water
-                </a>
-                <a class="nav-link" asp-controller="Waste" asp-action="Index">
-                    ♻️ Waste
-                </a>
-                <a class="nav-link" asp-controller="Analytics" asp-action="Index">
-                    📈 Analytics
-                </a>
-                <a class="nav-link" asp-controller="Alerts" asp-action="Index">
-                    🔔 Alerts
-                </a>
-            </div>
-        </div>
-    </nav>
+                
+                <nav class="sidebar-menu">
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" 
+                           asp-controller="Dashboard" asp-action="Index">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Energy" ? "active" : "")" 
+                           asp-controller="Energy" asp-action="Index">
+                            <span>⚡</span> Energy
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Water" ? "active" : "")" 
+                           asp-controller="Water" asp-action="Index">
+                            <span>💧</span> Water
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Waste" ? "active" : "")" 
+                           asp-controller="Waste" asp-action="Index">
+                            <span>♻️</span> Waste
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Analytics" ? "active" : "")" 
+                           asp-controller="Analytics" asp-action="Index">
+                            <span>📈</span> Analytics
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Alerts" ? "active" : "")" 
+                           asp-controller="Alerts" asp-action="Index">
+                            <span>🔔</span> Alerts
+                        </a>
+                    </div>
+                </nav>
 
-    <div class="container" style="max-width: 1400px;">
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success fade-in">
-                ✓ @TempData["SuccessMessage"]
-            </div>
-        }
-        @if (TempData["WarningMessage"] != null)
-        {
-            <div class="alert alert-high fade-in">
-                ⚠️ @TempData["WarningMessage"]
-            </div>
-        }
-        
-        <main role="main">
+                <div class="sidebar-footer" style="padding: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-outline-primary" style="width: 100%; justify-content: flex-start;">
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success fade-in" style="background: rgba(39, 174, 96, 0.1); border-left: 4px solid var(--success); color: var(--success); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        ✓ @TempData["SuccessMessage"]
+                    </div>
+                }
+                @if (TempData["WarningMessage"] != null)
+                {
+                    <div class="alert alert-warning fade-in" style="background: rgba(241, 196, 15, 0.1); border-left: 4px solid var(--warning); color: #856404; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        ⚠️ @TempData["WarningMessage"]
+                    </div>
+                }
+
+                @RenderBody()
+
+                <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.875rem; text-align: center;">
+                    © 2026 Smart Hospital Sustainability System • Optimizing Resources for a Greener Future
+                </footer>
+            </main>
+        </div>
+    }
+    else
+    {
+        <div class="login-container">
             @RenderBody()
-        </main>
-    </div>
-
-    <footer style="text-align: center; padding: 2rem; color: #6c757d; font-size: 0.875rem;">
-        <div class="container">
-            © 2026 Smart Hospital Sustainability System • Optimizing Resources for a Greener Future
         </div>
-    </footer>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

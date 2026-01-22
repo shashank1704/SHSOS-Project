@@ -5,6 +5,7 @@ using SHSOS.Services;
 
 namespace SHSOS.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class AlertsController : Controller
     {
         private readonly SHSOSDbContext _context;
@@ -19,7 +20,7 @@ namespace SHSOS.Controllers
         // GET: Alerts
         public IActionResult Index(string severity, bool? resolved)
         {
-            var alerts = _context.Alert
+            var alerts = _context.Alerts
                 .Include(a => a.Departments)
                 .AsQueryable();
 
@@ -46,7 +47,7 @@ namespace SHSOS.Controllers
             if (id == null)
                 return NotFound();
 
-            var alert = _context.Alert
+            var alert = _context.Alerts
                 .Include(a => a.Departments)
                 .ThenInclude(d => d.hospitals)
                 .FirstOrDefault(a => a.AlertID == id);

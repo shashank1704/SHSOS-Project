@@ -5,112 +5,159 @@
 }
 
 <div class="fade-in">
+    <!-- Header -->
     <div class="row mb-4">
         <div class="col-md-12">
-            <h1 style="font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                💧 Water Management
-            </h1>
-            <p style="color: var(--text-secondary);">Monitor and manage water consumption across all departments</p>
+            <h1 style="font-weight: 700; color: #3498db;">💧 Water Management</h1>
+            <p style="color: var(--text-secondary);">Tracking water usage and leak detection for sustainability</p>
         </div>
     </div>
 
     <!-- Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="metric-card">
-                <div class="metric-label">Total Consumption</div>
-                <div class="metric-value">@ViewBag.TotalLiters</div>
-                <small style="color: #6c757d;">Liters</small>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">🚿</div>
+                <div class="stat-info">
+                    <span class="label">Total Liters</span>
+                    <span class="value">@ViewBag.TotalLiters<small style="font-size: 0.8rem;"> L</small></span>
+                </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="metric-card">
-                <div class="metric-label">Total Cost</div>
-                <div class="metric-value">₹@Math.Round((decimal)ViewBag.TotalCost, 2)</div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">💸</div>
+                <div class="stat-info">
+                    <span class="label">Total Cost</span>
+                    <span class="value">₹@Math.Round((decimal)ViewBag.TotalCost, 0)</span>
+                </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="metric-card">
-                <div class="metric-label">Leakages Detected</div>
-                <div class="metric-value" style="color: @(ViewBag.LeakageCount > 0 ? "#ef4444" : "#10b981");">@ViewBag.LeakageCount</div>
-                <small style="color: #6c757d;">@(ViewBag.LeakageCount > 0 ? "⚠️ Needs Attention" : "✓ All Clear")</small>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: @(ViewBag.LeakageCount > 0 ? "rgba(231, 76, 60, 0.1)" : "rgba(39, 174, 96, 0.1)"); color: @(ViewBag.LeakageCount > 0 ? "#e74c3c" : "#27ae60");">🚰</div>
+                <div class="stat-info">
+                    <span class="label">Leaks Detected</span>
+                    <span class="value">@ViewBag.LeakageCount <small style="font-size: 0.8rem;">Issues</small></span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Filters and Actions -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
-                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px;">
-                    <label class="form-label">Department</label>
-                    <select name="departmentId" class="form-control">
-                        <option value="">All Departments</option>
-                        @foreach (var dept in ViewBag.Departments)
-                        {
-                            <option value="@dept.Value" selected="@(dept.Value == ViewBag.SelectedDepartment?.ToString())">@dept.Text</option>
-                        }
-                    </select>
+    <!-- Chart Row -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Water Usage Trend (Selection)</div>
+                <div class="card-body">
+                    <canvas id="waterPageChart" style="max-height: 250px;"></canvas>
                 </div>
-                <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 150px;">
-                    <label class="form-label">Filter</label>
-                    <select name="leakageOnly" class="form-control">
-                        <option value="">All Records</option>
-                        <option value="true" selected="@(ViewBag.LeakageOnly == true)">Leakages Only</option>
-                    </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">Resource Filters</div>
+                <div class="card-body">
+                    <form method="get" style="display: grid; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select name="departmentId" class="form-control">
+                                <option value="">All Departments</option>
+                                @foreach (var dept in ViewBag.Departments)
+                                {
+                                    <option value="@dept.Value" selected="@(dept.Value == ViewBag.SelectedDepartment?.ToString())">@dept.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Leakage Status</label>
+                            <select name="leakageOnly" class="form-control">
+                                <option value="">All Records</option>
+                                <option value="true" selected="@(ViewBag.LeakageOnly == true)">Leaks Only</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">Filter Result</button>
+                            <a asp-action="Create" class="btn btn-primary" style="background: #3498db; border-color: #3498db;">+ Add New</a>
+                        </div>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary">🔍 Filter</button>
-                <a asp-action="Create" class="btn btn-success">➕ Add Reading</a>
-            </form>
+            </div>
         </div>
     </div>
 
     <!-- Data Table -->
     <div class="card">
-        <div class="card-header">Water Consumption Records</div>
-        <div class="card-body" style="padding: 0; overflow-x: auto;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Department</th>
-                        <th>Consumption (L)</th>
-                        <th>Cost</th>
-                        <th>Leakage</th>
-                        <th>Weather</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr style="@(item.LeakageDetected ? "background-color: rgba(239, 68, 68, 0.1);" : "")">
-                            <td>@item.ConsumptionDate.ToString("MMM dd, yyyy")</td>
-                            <td>@item.Departments.DepartmentName</td>
-                            <td><strong>@item.UnitsConsumedLiters</strong></td>
-                            <td>₹@Math.Round(item.UnitsConsumedLiters * item.UnitCost, 2)</td>
-                            <td>
-                                @if (item.LeakageDetected)
-                                {
-                                    <span class="badge-high">⚠️ Detected</span>
-                                }
-                                else
-                                {
-                                    <span class="badge-low">✓ None</span>
-                                }
-                            </td>
-                            <td>@item.WeatherCondition</td>
-                            <td>
-                                <div style="display: flex; gap: 0.5rem;">
-                                    <a asp-action="Details" asp-route-id="@item.ConsumptionID" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View</a>
-                                    <a asp-action="Edit" asp-route-id="@item.ConsumptionID" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.ConsumptionID" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Delete</a>
-                                </div>
-                            </td>
+        <div class="card-header">Recent Consumption Data</div>
+        <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Department</th>
+                            <th>Volume (L)</th>
+                            <th>Condition</th>
+                            <th>Leakage</th>
+                            <th>Cost</th>
+                            <th>Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderByDescending(x => x.ConsumptionDate).Take(50))
+                        {
+                            <tr style="@(item.LeakageDetected ? "background-color: rgba(231, 76, 60, 0.05);" : "")">
+                                <td>@item.ConsumptionDate.ToString("MMM dd, yyyy")</td>
+                                <td><strong>@item.Departments?.DepartmentName</strong></td>
+                                <td>@item.UnitsConsumedLiters</td>
+                                <td style="color: var(--text-secondary);">@item.WeatherCondition</td>
+                                <td>
+                                    @if(item.LeakageDetected) {
+                                        <span class="badge" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; font-weight: 700;">⚠ Leak</span>
+                                    } else {
+                                        <span class="badge" style="background: rgba(39, 174, 96, 0.1); color: #27ae60;">✓ Clear</span>
+                                    }
+                                </td>
+                                <td>₹@Math.Round(item.UnitsConsumedLiters * item.UnitCost, 2)</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.ConsumptionID" class="btn btn-outline-primary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; border-color: #3498db; color: #3498db;">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const chartData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.OrderBy(x => x.ConsumptionDate).TakeLast(20).Select(x => new { Date = x.ConsumptionDate.ToString("MMM dd"), Value = x.UnitsConsumedLiters })));
+        
+        const ctx = document.getElementById('waterPageChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.map(x => x.Date),
+                datasets: [{
+                    label: 'Water (L)',
+                    data: chartData.map(x => x.Value),
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+}

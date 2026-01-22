@@ -9,83 +9,115 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SHSOS
 build_property.RootNamespace = SHSOS
-build_property.ProjectDir = C:\Shashank Projects\Data\SHSOS\
+build_property.ProjectDir = C:\NarasimhaProjects\Major Project-1\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Shashank Projects\Data\SHSOS
+build_property.MSBuildProjectDirectory = C:\NarasimhaProjects\Major Project-1
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Alerts/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Alerts/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWxlcnRzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Analytics/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Analytics/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQW5hbHl0aWNzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Dashboard/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Dashboard/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Energy/Create.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Energy/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5lcmd5XENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Energy/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Energy/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5lcmd5XERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Energy/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5lcmd5XERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Energy/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5lcmd5XEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Energy/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5lcmd5XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Home/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Home/Privacy.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Shared/Error.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Waste/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Waste/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzdGVcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Waste/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzdGVcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Waste/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzdGVcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Waste/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzdGVcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/NarasimhaProjects/Major Project-1/Views/Waste/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2FzdGVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Water/Create.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Water/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2F0ZXJcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Water/Delete.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Water/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2F0ZXJcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Water/Details.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Water/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2F0ZXJcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Water/Edit.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Water/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2F0ZXJcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Water/Index.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Water/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV2F0ZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/_ViewImports.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/_ViewStart.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Shashank Projects/Data/SHSOS/Views/Shared/_Layout.cshtml]
+[C:/NarasimhaProjects/Major Project-1/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-xyfxl298vl

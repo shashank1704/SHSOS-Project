@@ -18,7 +18,7 @@ namespace SHSOS.Data
         public DbSet<WasteManagement> WasteManagement { get; set; }
         public DbSet<EnergyConsumption> EnergyConsumption { get; set; }
         public DbSet<WaterConsumption> WaterConsumption { get; set; }
-        public DbSet<Alert> Alert { get; set; }
+        public DbSet<Alert> Alerts { get; set; }
         public DbSet<ResourceThreshold> ResourceThreshold { get; set; }
         public DbSet<SustainabilityMetrics> SustainabilityMetrics { get; set; }
 

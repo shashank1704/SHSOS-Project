@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SHSOS.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class DashboardController : Controller
     {
         private readonly SHSOSDbContext _context;

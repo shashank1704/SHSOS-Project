@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SHSOS.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class AnalyticsController : Controller
     {
         private readonly SHSOSDbContext _context;

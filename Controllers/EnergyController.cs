@@ -7,6 +7,7 @@ using SHSOS.Services;
 
 namespace SHSOS.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class EnergyController : Controller
     {
         private readonly SHSOSDbContext _context;

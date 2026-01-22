@@ -104,7 +104,7 @@ namespace SHSOS.Services
                                  string message, decimal thresholdValue, decimal actualValue)
         {
             // Check if similar alert already exists today
-            var existingAlert = _context.Alert
+            var existingAlert = _context.Alerts
                 .FirstOrDefault(a => a.DepartmentID == departmentId &&
                                     a.AlertType == alertType &&
                                     a.CreatedAt.Date == DateTime.Today &&
@@ -125,7 +125,7 @@ namespace SHSOS.Services
                 IsResolved = false
             };
 
-            _context.Alert.Add(alert);
+            _context.Alerts.Add(alert);
             _context.SaveChanges();
         }
 
@@ -133,7 +133,7 @@ namespace SHSOS.Services
 
         public List<Alert> GetActiveAlerts()
         {
-            return _context.Alert
+            return _context.Alerts
                 .Where(a => !a.IsResolved)
                 .OrderByDescending(a => a.CreatedAt)
                 .ToList();
@@ -141,7 +141,7 @@ namespace SHSOS.Services
 
         public List<Alert> GetAlertsByDepartment(int departmentId, bool includeResolved = false)
         {
-            var query = _context.Alert.Where(a => a.DepartmentID == departmentId);
+            var query = _context.Alerts.Where(a => a.DepartmentID == departmentId);
 
             if (!includeResolved)
                 query = query.Where(a => !a.IsResolved);
@@ -151,7 +151,7 @@ namespace SHSOS.Services
 
         public void ResolveAlert(int alertId, string resolutionNotes)
         {
-            var alert = _context.Alert.Find(alertId);
+            var alert = _context.Alerts.Find(alertId);
             if (alert != null)
             {
                 alert.IsResolved = true;
@@ -163,7 +163,7 @@ namespace SHSOS.Services
 
         public Dictionary<string, int> GetAlertSummary()
         {
-            var activeAlerts = _context.Alert.Where(a => !a.IsResolved).ToList();
+            var activeAlerts = _context.Alerts.Where(a => !a.IsResolved).ToList();
 
             return new Dictionary<string, int>
             {

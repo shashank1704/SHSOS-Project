@@ -1,0 +1,63 @@
+@model SHSOS.Models.EnergyConsumption
+
+@{
+    ViewData["Title"] = "Delete Energy Reading";
+}
+
+<div class="fade-in">
+    <h1 style="font-weight: 700; margin-bottom: 2rem; color: var(--danger);">⚠️ Delete Energy Reading</h1>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header" style="background: rgba(231, 76, 60, 0.1); border-bottom-color: #e74c3c;">
+            <h3 style="color: #e74c3c; margin: 0;">Confirm Deletion</h3>
+        </div>
+        <div class="card-body">
+            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                Are you sure you want to delete this energy consumption record? This action cannot be undone.
+            </p>
+
+            <div style="background: var(--bg-main); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl>
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Department</dt>
+                            <dd style="font-weight: 600; margin-bottom: 1rem;">@Model.Departments?.DepartmentName</dd>
+
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Consumption Date</dt>
+                            <dd style="font-weight: 600; margin-bottom: 1rem;">@Model.ConsumptionDate.ToString("MMMM dd, yyyy")</dd>
+
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Reading Time</dt>
+                            <dd style="font-weight: 600; margin-bottom: 1rem;">@Model.ReadingTime</dd>
+
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Units Consumed</dt>
+                            <dd style="font-weight: 600; margin-bottom: 0;">@Model.UnitsConsumedkWh kWh</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl>
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Total Cost</dt>
+                            <dd style="font-weight: 600; margin-bottom: 1rem;">₹@Model.TotalCost</dd>
+
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Carbon Emissions</dt>
+                            <dd style="font-weight: 600; margin-bottom: 1rem;">@Model.CarbonEmissionsKg Kg</dd>
+
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Usage Category</dt>
+                            <dd style="font-weight: 600; margin-bottom: 1rem;">@Model.UsageCategory</dd>
+
+                            <dt style="color: var(--text-secondary); font-size: 0.875rem;">Peak Hour</dt>
+                            <dd style="font-weight: 600; margin-bottom: 0;">@(Model.PeakHourFlag ? "Yes" : "No")</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="EnergyConsumptionID" />
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-danger" style="flex: 1;">🗑️ Confirm Delete</button>
+                    <a asp-action="Index" class="btn btn-outline" style="flex: 1; justify-content: center;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
