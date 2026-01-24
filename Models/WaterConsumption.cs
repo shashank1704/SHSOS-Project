@@ -14,7 +14,7 @@ namespace SHSOS.Models
         public int DepartmentID { get; set; }
 
         [ForeignKey(nameof(DepartmentID))]
-        public Departments Departments { get; set; }
+        public Departments? Departments { get; set; }
 
         public DateTime ConsumptionDate { get; set; }
         public TimeSpan ReadingTime { get; set; }
@@ -25,10 +25,10 @@ namespace SHSOS.Models
         public decimal UnitCost { get; set; }
         public bool LeakageDetected { get; set; }
 
-        public string WeatherCategory { get; set; }
-        public string WeatherCondition { get; set; }
+        public string? WeatherCategory { get; set; }
+        public string? WeatherCondition { get; set; }
 
-        public string Remarks { get; set; }
+        public string? Remarks { get; set; }
         public DateTime RecordedAt { get; set; }
     }
 }

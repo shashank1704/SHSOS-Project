@@ -19,6 +19,63 @@ namespace SHSOS.Controllers
             _analyticsService = analyticsService;
         }
 
+        // API Endpoints
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpGet("api/water")]
+        public async Task<IActionResult> GetWaterData(int? departmentId, bool? leakageOnly)
+        {
+            var query = _context.WaterConsumption.Include(w => w.Departments).AsQueryable();
+
+            if (departmentId.HasValue)
+                query = query.Where(w => w.DepartmentID == departmentId.Value);
+
+            if (leakageOnly == true)
+                query = query.Where(w => w.LeakageDetected);
+
+            var waterData = await query.OrderByDescending(w => w.ConsumptionDate).ToListAsync();
+            return Json(waterData);
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpPost("api/water")]
+        public async Task<IActionResult> ApiCreate([FromBody] WaterConsumption water)
+        {
+            if (ModelState.IsValid)
+            {
+                water.RecordedAt = DateTime.Now;
+                _context.Add(water);
+                await _context.SaveChangesAsync();
+                return Ok(water);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpDelete("api/water/{id}")]
+        public async Task<IActionResult> ApiDelete(int id)
+        {
+            var water = await _context.WaterConsumption.FindAsync(id);
+            if (water == null) return NotFound();
+
+            _context.WaterConsumption.Remove(water);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpPut("api/water/{id}")]
+        public async Task<IActionResult> ApiUpdate(int id, [FromBody] WaterConsumption water)
+        {
+            if (id != water.ConsumptionID) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                _context.Update(water);
+                await _context.SaveChangesAsync();
+                return Ok(water);
+            }
+            return BadRequest(ModelState);
+        }
+
         // GET: Water
         public async Task<IActionResult> Index(int? departmentId, bool? leakageOnly)
         {

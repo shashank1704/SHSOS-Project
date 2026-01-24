@@ -45,7 +45,8 @@ namespace SHSOS.Services
         {
             return _context.EnergyConsumption
                 .Include(e => e.Departments)
-                .GroupBy(e => e.Departments.DepartmentName)
+                .Where(e => e.Departments != null)
+                .GroupBy(e => e.Departments!.DepartmentName ?? "Unknown")
                 .ToDictionary(g => g.Key, g => g.Sum(e => e.UnitsConsumedkWh));
         }
 
@@ -101,7 +102,8 @@ namespace SHSOS.Services
         {
             return _context.WaterConsumption
                 .Include(w => w.Departments)
-                .GroupBy(w => w.Departments.DepartmentName)
+                .Where(w => w.Departments != null)
+                .GroupBy(w => w.Departments!.DepartmentName ?? "Unknown")
                 .ToDictionary(g => g.Key, g => g.Sum(w => w.UnitsConsumedLiters));
         }
 
@@ -123,7 +125,7 @@ namespace SHSOS.Services
         public Dictionary<string, decimal> GetWasteByCategory()
         {
             return _context.WasteManagement
-                .GroupBy(w => w.WasteCategory)
+                .GroupBy(w => w.WasteCategory ?? "Uncategorized")
                 .ToDictionary(g => g.Key, g => g.Sum(w => w.WasteWeight));
         }
 

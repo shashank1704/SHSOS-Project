@@ -15,21 +15,21 @@ namespace SHSOS.Models
         public int DepartmentID { get; set; }
 
         [ForeignKey(nameof(DepartmentID))]
-        public Departments Departments { get; set; }
+        public Departments? Departments { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string ResourceType { get; set; } // Energy, Water, Waste
+        public string? ResourceType { get; set; } // Energy, Water, Waste
 
         [Required]
         [StringLength(50)]
-        public string ThresholdName { get; set; } // Daily Limit, Peak Hour, etc.
+        public string? ThresholdName { get; set; } // Daily Limit, Peak Hour, etc.
 
         public decimal WarningThreshold { get; set; }
         public decimal CriticalThreshold { get; set; }
 
         [StringLength(20)]
-        public string Unit { get; set; } // kWh, Liters, Kg
+        public string? Unit { get; set; } // kWh, Liters, Kg
 
         public bool IsActive { get; set; }
 

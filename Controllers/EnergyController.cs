@@ -19,6 +19,71 @@ namespace SHSOS.Controllers
             _analyticsService = analyticsService;
         }
 
+        // API Endpoints
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpGet("api/energy")]
+        public async Task<IActionResult> GetEnergyData(int? departmentId, DateTime? startDate, DateTime? endDate)
+        {
+            var query = _context.EnergyConsumption.Include(e => e.Departments).AsQueryable();
+
+            if (departmentId.HasValue)
+                query = query.Where(e => e.DepartmentID == departmentId.Value);
+
+            if (startDate.HasValue)
+                query = query.Where(e => e.ConsumptionDate >= startDate.Value);
+
+            if (endDate.HasValue)
+                query = query.Where(e => e.ConsumptionDate <= endDate.Value);
+
+            var energyData = await query.OrderByDescending(e => e.ConsumptionDate).ToListAsync();
+            return Json(energyData);
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpPost("api/energy")]
+        public async Task<IActionResult> ApiCreate([FromBody] EnergyConsumption energy)
+        {
+            if (ModelState.IsValid)
+            {
+                energy.TotalCost = energy.UnitsConsumedkWh * energy.UnitCost;
+                energy.CarbonEmissionsKg = energy.UnitsConsumedkWh * 0.5m;
+                energy.RecordedAt = DateTime.Now;
+
+                _context.Add(energy);
+                await _context.SaveChangesAsync();
+                return Ok(energy);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpDelete("api/energy/{id}")]
+        public async Task<IActionResult> ApiDelete(int id)
+        {
+            var energy = await _context.EnergyConsumption.FindAsync(id);
+            if (energy == null) return NotFound();
+
+            _context.EnergyConsumption.Remove(energy);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpPut("api/energy/{id}")]
+        public async Task<IActionResult> ApiUpdate(int id, [FromBody] EnergyConsumption energy)
+        {
+            if (id != energy.EnergyConsumptionID) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                energy.TotalCost = energy.UnitsConsumedkWh * energy.UnitCost;
+                energy.CarbonEmissionsKg = energy.UnitsConsumedkWh * 0.5m;
+                _context.Update(energy);
+                await _context.SaveChangesAsync();
+                return Ok(energy);
+            }
+            return BadRequest(ModelState);
+        }
+
         // GET: Energy
         public async Task<IActionResult> Index(int? departmentId, DateTime? startDate, DateTime? endDate)
         {

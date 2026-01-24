@@ -19,6 +19,63 @@ namespace SHSOS.Controllers
             _analyticsService = analyticsService;
         }
 
+        // API Endpoints
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpGet("api/waste")]
+        public async Task<IActionResult> GetWasteData(int? departmentId, string wasteCategory)
+        {
+            var query = _context.WasteManagement.Include(w => w.Departments).AsQueryable();
+
+            if (departmentId.HasValue)
+                query = query.Where(w => w.DepartmentID == departmentId.Value);
+
+            if (!string.IsNullOrEmpty(wasteCategory))
+                query = query.Where(w => w.WasteCategory == wasteCategory);
+
+            var wasteData = await query.OrderByDescending(w => w.CollectionDate).ToListAsync();
+            return Json(wasteData);
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpPost("api/waste")]
+        public async Task<IActionResult> ApiCreate([FromBody] WasteManagement waste)
+        {
+            if (ModelState.IsValid)
+            {
+                waste.RecordedAt = DateTime.Now;
+                _context.Add(waste);
+                await _context.SaveChangesAsync();
+                return Ok(waste);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpDelete("api/waste/{id}")]
+        public async Task<IActionResult> ApiDelete(int id)
+        {
+            var waste = await _context.WasteManagement.FindAsync(id);
+            if (waste == null) return NotFound();
+
+            _context.WasteManagement.Remove(waste);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpPut("api/waste/{id}")]
+        public async Task<IActionResult> ApiUpdate(int id, [FromBody] WasteManagement waste)
+        {
+            if (id != waste.WasteRecordID) return BadRequest();
+            if (ModelState.IsValid)
+            {
+                _context.Update(waste);
+                await _context.SaveChangesAsync();
+                return Ok(waste);
+            }
+            return BadRequest(ModelState);
+        }
+
         // GET: Waste
         public async Task<IActionResult> Index(int? departmentId, string wasteCategory)
         {

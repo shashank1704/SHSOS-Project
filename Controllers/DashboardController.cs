@@ -28,6 +28,47 @@ namespace SHSOS.Controllers
             _sustainabilityService = sustainabilityService;
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpGet("api/dashboard/data")]
+        public IActionResult GetData()
+        {
+            try 
+            {
+                var currentMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                var data = new
+                {
+                    TotalEnergy = _analyticsService.GetTotalEnergyConsumption(),
+                    TotalWater = _analyticsService.GetTotalWaterConsumption(),
+                    TotalWaste = _analyticsService.GetTotalWasteGenerated(),
+                    TotalCarbon = _analyticsService.GetTotalCarbonEmissions(),
+                    PredictedMonthlyCost = Math.Round((decimal)_predictionService.PredictTotalMonthlyCost(), 2),
+                    ActiveAlerts = _alertService.GetActiveAlerts().Take(5).ToList(),
+                    SustainabilityScores = _context.Departments.ToList().Select(d => new 
+                    { 
+                        Name = d.DepartmentName, 
+                        Score = Math.Round(_sustainabilityService.CalculateSustainabilityScore(d.DepartmentID).SustainabilityScore, 1)
+                    }).ToList(),
+                    EnergyTrendData = _analyticsService.GetEnergyTrend(30)
+                };
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message, stackTrace = ex.StackTrace });
+            }
+        }
+
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpGet("api/departments")]
+        public IActionResult GetDepartments()
+        {
+            var depts = _context.Departments.Select(d => new { d.DepartmentID, d.DepartmentName }).ToList();
+            return Json(depts);
+        }
+
+
         public IActionResult Index()
         {
             // ===== Current Month Data =====

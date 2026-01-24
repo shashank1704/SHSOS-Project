@@ -15,7 +15,7 @@ namespace SHSOS.Models
         public int DepartmentID { get; set; }
 
         [ForeignKey(nameof(DepartmentID))]
-        public Departments Departments { get; set; }
+        public Departments? Departments { get; set; }
 
         public DateTime CalculationDate { get; set; }
 
@@ -47,6 +47,6 @@ namespace SHSOS.Models
         public DateTime RecordedAt { get; set; }
 
         [StringLength(1000)]
-        public string Recommendations { get; set; }
+        public string? Recommendations { get; set; }
     }
 }
