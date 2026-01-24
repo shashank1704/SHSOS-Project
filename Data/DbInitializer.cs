@@ -11,9 +11,23 @@ namespace SHSOS.Data
         {
             context.Database.EnsureCreated();
 
-            if (context.hospitals.Any())
+            if (context.hospitals.Any() && context.Users.Any())
             {
                 return;   // DB has been seeded
+            }
+
+            if (!context.Users.Any())
+            {
+                context.Users.Add(new User
+                {
+                    Username = "admin",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin@123"),
+                    Email = "admin@shsos.com",
+                    FullName = "Demo Admin",
+                    Role = "Administrator",
+                    CreatedAt = DateTime.UtcNow
+                });
+                context.SaveChanges();
             }
 
             var hospitalsList = new hospitals[]

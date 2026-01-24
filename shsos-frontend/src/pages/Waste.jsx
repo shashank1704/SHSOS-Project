@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Recycle, Trash2, Edit2, ShieldCheck, ShieldAlert, Plus } from 'lucide-react';
+import { Recycle, Trash2, Edit2, ShieldCheck, ShieldAlert, Plus, BarChart3 } from 'lucide-react';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 import api from '../services/api';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Waste = () => {
     const [data, setData] = useState([]);
@@ -84,17 +88,49 @@ const Waste = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const payload = { ...formData };
+        delete payload.departments; // Strip navigation property
+
         try {
             if (isEditing) {
-                await api.put(`/api/waste/${formData.wasteRecordID}`, formData);
+                await api.put(`/api/waste/${payload.wasteRecordID}`, payload);
             } else {
-                await api.post('/api/waste', formData);
+                await api.post('/api/waste', payload);
             }
             setShowModal(false);
             fetchData();
         } catch (error) {
             console.error('Error saving waste record:', error);
             alert('Error saving record. Please check the logs.');
+        }
+    };
+
+    const chartData = {
+        labels: data.slice(0, 15).reverse().map(d => new Date(d.collectionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+        datasets: [{
+            label: 'Waste Collected (Kg)',
+            data: data.slice(0, 15).reverse().map(d => d.wasteWeight),
+            backgroundColor: 'rgba(155, 89, 182, 0.7)',
+            borderRadius: 6,
+            hoverBackgroundColor: 'rgba(155, 89, 182, 0.9)',
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#1e293b',
+                padding: 12,
+                titleFont: { size: 14, weight: 'bold' },
+                bodyFont: { size: 13 }
+            }
+        },
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+            x: { grid: { display: false } }
         }
     };
 
@@ -108,22 +144,43 @@ const Waste = () => {
                 <button className="btn btn-primary" onClick={() => handleOpenModal()}><Plus size={18} /> Log New Collection</button>
             </div>
 
-            <div className="card mb-4" style={{ marginBottom: '1.5rem' }}>
-                <div className="card-body" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                    <div style={{ flex: 1, display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <label className="form-label" style={{ marginBottom: 0 }}>Category Filter:</label>
-                        <select
-                            className="form-control"
-                            style={{ width: '250px' }}
-                            value={wasteCategory}
-                            onChange={(e) => setWasteCategory(e.target.value)}
-                        >
-                            <option value="">All Categories</option>
-                            <option value="Infectious">Infectious</option>
-                            <option value="General">General</option>
-                            <option value="Hazardous">Hazardous</option>
-                            <option value="Recyclable">Recyclable</option>
-                        </select>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                <div className="card">
+                    <div className="card-header">Waste Collection Trend</div>
+                    <div className="card-body" style={{ height: '300px' }}>
+                        {data.length > 0 ? <Bar data={chartData} options={chartOptions} /> : <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>No data for chart</p>}
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-header">Filters & Analytics</div>
+                    <div className="card-body">
+                        <div style={{ display: 'grid', gap: '1.25rem' }}>
+                            <div>
+                                <label className="form-label">Category Filter</label>
+                                <select
+                                    className="form-control"
+                                    value={wasteCategory}
+                                    onChange={(e) => setWasteCategory(e.target.value)}
+                                >
+                                    <option value="">All Categories</option>
+                                    <option value="Infectious">Infectious</option>
+                                    <option value="General">General</option>
+                                    <option value="Hazardous">Hazardous</option>
+                                    <option value="Recyclable">Recyclable</option>
+                                </select>
+                            </div>
+
+                            <div style={{ padding: '1rem', background: 'rgba(155, 89, 182, 0.05)', borderRadius: '12px', border: '1px dashed rgba(155, 89, 182, 0.2)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: '#8e44ad' }}>
+                                    <BarChart3 size={16} />
+                                    <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Current Batch</span>
+                                </div>
+                                <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>
+                                    {data.length} <small style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-secondary)' }}>Records</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

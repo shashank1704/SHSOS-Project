@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Droplets, Trash2, Edit2, AlertCircle, Plus, Zap } from 'lucide-react';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import api from '../services/api';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const Water = () => {
     const [data, setData] = useState([]);
@@ -84,17 +88,46 @@ const Water = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const payload = { ...formData };
+        delete payload.departments; // Strip navigation property for API call
+
         try {
             if (isEditing) {
-                await api.put(`/api/water/${formData.consumptionID}`, formData);
+                await api.put(`/api/water/${payload.consumptionID}`, payload);
             } else {
-                await api.post('/api/water', formData);
+                await api.post('/api/water', payload);
             }
             setShowModal(false);
             fetchData();
         } catch (error) {
             console.error('Error saving water record:', error);
             alert('Error saving record. Please check the logs.');
+        }
+    };
+
+    const chartData = {
+        labels: data.slice(0, 15).reverse().map(d => new Date(d.consumptionDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+        datasets: [{
+            label: 'Consumption (Liters)',
+            data: data.slice(0, 15).reverse().map(d => d.unitsConsumedLiters),
+            borderColor: '#3498db',
+            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#3498db',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+            x: { grid: { display: false } }
         }
     };
 
@@ -108,16 +141,45 @@ const Water = () => {
                 <button className="btn btn-primary" onClick={() => handleOpenModal()}><Plus size={18} /> Add New Entry</button>
             </div>
 
-            <div className="card mb-4" style={{ marginBottom: '1.5rem' }}>
-                <div className="card-body" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <label className="form-label" style={{ marginBottom: 0 }}>Show Leakage Only</label>
-                        <input
-                            type="checkbox"
-                            checked={leakageOnly}
-                            onChange={(e) => setLeakageOnly(e.target.checked)}
-                            style={{ width: '20px', height: '20px' }}
-                        />
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                <div className="card">
+                    <div className="card-header">Consumption Trend</div>
+                    <div className="card-body" style={{ height: '300px' }}>
+                        {data.length > 0 ? <Line data={chartData} options={chartOptions} /> : <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>No data for chart</p>}
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-header">Filters & Options</div>
+                    <div className="card-body">
+                        <div style={{ display: 'grid', gap: '1.5rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                <label className="form-label" style={{ marginBottom: 0 }}>Leakage Filter</label>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                                    <input
+                                        type="checkbox"
+                                        id="leakageFilter"
+                                        checked={leakageOnly}
+                                        onChange={(e) => setLeakageOnly(e.target.checked)}
+                                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                                    />
+                                    <label htmlFor="leakageFilter" style={{ cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 }}>Show Leakage Only</label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="form-label">Department Lookup</label>
+                                <select className="form-control" onChange={(e) => {
+                                    // This is just a UI placeholder for now as the current API handles leakageOnly
+                                    console.log('Selected dept:', e.target.value);
+                                }}>
+                                    <option value="">All Departments</option>
+                                    {departments.map(d => (
+                                        <option key={d.departmentID} value={d.departmentID}>{d.departmentName}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

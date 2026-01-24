@@ -49,7 +49,9 @@ namespace SHSOS.Controllers
                         Name = d.DepartmentName, 
                         Score = Math.Round(_sustainabilityService.CalculateSustainabilityScore(d.DepartmentID).SustainabilityScore, 1)
                     }).ToList(),
-                    EnergyTrendData = _analyticsService.GetEnergyTrend(30)
+                    EnergyTrendData = _analyticsService.GetEnergyTrend(30).Select(d => new { d.Date, Consumption = d.Value }),
+                    WaterTrendData = _analyticsService.GetWaterTrend(30).Select(d => new { d.Date, Consumption = d.Value }),
+                    WasteTrendData = _analyticsService.GetWasteTrend(30).Select(d => new { d.Date, Weight = d.Value })
                 };
 
                 return Json(data);

@@ -68,7 +68,7 @@ namespace SHSOS.Controllers
             return Json(new
             {
                 labels = data.Select(d => d.Date.ToString("MMM dd")).ToArray(),
-                values = data.Select(d => d.Consumption).ToArray()
+                values = data.Select(d => d.Value).ToArray()
             });
         }
 

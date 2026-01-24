@@ -50,16 +50,14 @@ namespace SHSOS.Services
                 .ToDictionary(g => g.Key, g => g.Sum(e => e.UnitsConsumedkWh));
         }
 
-        public List<(DateTime Date, decimal Consumption)> GetEnergyTrend(int days = 30)
+        public List<TrendData> GetEnergyTrend(int days = 30)
         {
             var cutoffDate = DateTime.Now.AddDays(-days);
             return _context.EnergyConsumption
                 .Where(e => e.ConsumptionDate >= cutoffDate)
                 .GroupBy(e => e.ConsumptionDate.Date)
-                .Select(g => new { Date = g.Key, Consumption = g.Sum(e => e.UnitsConsumedkWh) })
+                .Select(g => new TrendData { Date = g.Key, Value = g.Sum(e => e.UnitsConsumedkWh) })
                 .OrderBy(x => x.Date)
-                .AsEnumerable()
-                .Select(x => (x.Date, x.Consumption))
                 .ToList();
         }
 
@@ -107,6 +105,17 @@ namespace SHSOS.Services
                 .ToDictionary(g => g.Key, g => g.Sum(w => w.UnitsConsumedLiters));
         }
 
+        public List<TrendData> GetWaterTrend(int days = 30)
+        {
+            var cutoffDate = DateTime.Now.AddDays(-days);
+            return _context.WaterConsumption
+                .Where(w => w.ConsumptionDate >= cutoffDate)
+                .GroupBy(w => w.ConsumptionDate.Date)
+                .Select(g => new TrendData { Date = g.Key, Value = g.Sum(w => w.UnitsConsumedLiters) })
+                .OrderBy(x => x.Date)
+                .ToList();
+        }
+
         // ===== WASTE ANALYTICS =====
 
         public decimal GetTotalWasteGenerated(DateTime? startDate = null, DateTime? endDate = null)
@@ -133,6 +142,17 @@ namespace SHSOS.Services
         {
             return _context.WasteManagement
                 .Count(w => w.ComplianceStatus != "Compliant");
+        }
+
+        public List<TrendData> GetWasteTrend(int days = 30)
+        {
+            var cutoffDate = DateTime.Now.AddDays(-days);
+            return _context.WasteManagement
+                .Where(w => w.CollectionDate >= cutoffDate)
+                .GroupBy(w => w.CollectionDate.Date)
+                .Select(g => new TrendData { Date = g.Key, Value = g.Sum(w => w.WasteWeight) })
+                .OrderBy(x => x.Date)
+                .ToList();
         }
 
         // ===== COST ANALYTICS =====

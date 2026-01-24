@@ -85,11 +85,14 @@ const Energy = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const payload = { ...formData };
+        delete payload.departments; // Strip navigation property
+
         try {
             if (isEditing) {
-                await api.put(`/api/energy/${formData.energyConsumptionID}`, formData);
+                await api.put(`/api/energy/${payload.energyConsumptionID}`, payload);
             } else {
-                await api.post('/api/energy', formData);
+                await api.post('/api/energy', payload);
             }
             setShowModal(false);
             fetchData();

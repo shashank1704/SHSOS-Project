@@ -21,6 +21,7 @@ namespace SHSOS.Data
         public DbSet<Alert> Alerts { get; set; }
         public DbSet<ResourceThreshold> ResourceThreshold { get; set; }
         public DbSet<SustainabilityMetrics> SustainabilityMetrics { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -26,17 +26,25 @@ builder.Services.AddCors(options =>
 });
 
 // Authentication
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/AccessDenied";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);
-        options.SlidingExpiration = true;
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+    };
+});
 
 // DbContext (SQL Server)
 builder.Services.AddDbContext<SHSOSDbContext>(options =>
