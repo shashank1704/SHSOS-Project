@@ -26,7 +26,12 @@ namespace SHSOS.Controllers
         [HttpGet("api/water")]
         public async Task<IActionResult> GetWaterData(int? departmentId, bool? leakageOnly)
         {
-            var query = _context.WaterConsumption.Include(w => w.Departments).AsQueryable();
+            var waterData = await _context.WaterConsumption
+                .FromSqlRaw("SELECT * FROM snot.vw_WaterConsumption")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var query = waterData.AsQueryable();
 
             if (departmentId.HasValue)
                 query = query.Where(w => w.DepartmentID == departmentId.Value);
@@ -34,8 +39,7 @@ namespace SHSOS.Controllers
             if (leakageOnly == true)
                 query = query.Where(w => w.LeakageDetected);
 
-            var waterData = await query.OrderByDescending(w => w.ConsumptionDate).ToListAsync();
-            return Json(waterData);
+            return Json(query.OrderByDescending(w => w.ConsumptionDate).ToList());
         }
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
@@ -83,7 +87,12 @@ namespace SHSOS.Controllers
         // GET: Water
         public async Task<IActionResult> Index(int? departmentId, bool? leakageOnly)
         {
-            var query = _context.WaterConsumption.Include(w => w.Departments).AsQueryable();
+            var waterData = await _context.WaterConsumption
+                .FromSqlRaw("SELECT * FROM snot.vw_WaterConsumption")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var query = waterData.AsQueryable();
 
             if (departmentId.HasValue)
                 query = query.Where(w => w.DepartmentID == departmentId.Value);
@@ -95,14 +104,14 @@ namespace SHSOS.Controllers
             ViewBag.SelectedDepartment = departmentId;
             ViewBag.LeakageOnly = leakageOnly;
 
-            var waterData = await query.OrderByDescending(w => w.ConsumptionDate).ToListAsync();
+            var results = query.OrderByDescending(w => w.ConsumptionDate).ToList();
 
             // Summary statistics
-            ViewBag.TotalLiters = waterData.Sum(w => w.UnitsConsumedLiters);
-            ViewBag.LeakageCount = waterData.Count(w => w.LeakageDetected);
-            ViewBag.TotalCost = waterData.Sum(w => w.UnitsConsumedLiters * w.UnitCost);
+            ViewBag.TotalLiters = results.Sum(w => w.UnitsConsumedLiters);
+            ViewBag.LeakageCount = results.Count(w => w.LeakageDetected);
+            ViewBag.TotalCost = results.Sum(w => w.UnitsConsumedLiters * w.UnitCost);
 
-            return View(waterData);
+            return View(results);
         }
 
         // GET: Water/Details/5
@@ -112,8 +121,8 @@ namespace SHSOS.Controllers
                 return NotFound();
 
             var water = await _context.WaterConsumption
-                .Include(w => w.Departments)
-                .ThenInclude(d => d.hospitals)
+                .FromSqlRaw("SELECT * FROM snot.vw_WaterConsumption")
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ConsumptionID == id);
 
             if (water == null)
@@ -182,8 +191,16 @@ namespace SHSOS.Controllers
             {
                 try
                 {
-                    _context.Update(water);
-                    await _context.SaveChangesAsync();
+                    // Use Stored Procedure for updates
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC snot.usp_UpdateWater @ConsumptionID, @UnitsConsumedLiters, @ConsumptionDate, @LeakageDetected, @Remarks",
+                        new Microsoft.Data.SqlClient.SqlParameter("@ConsumptionID", water.ConsumptionID),
+                        new Microsoft.Data.SqlClient.SqlParameter("@UnitsConsumedLiters", water.UnitsConsumedLiters),
+                        new Microsoft.Data.SqlClient.SqlParameter("@ConsumptionDate", water.ConsumptionDate),
+                        new Microsoft.Data.SqlClient.SqlParameter("@LeakageDetected", water.LeakageDetected),
+                        new Microsoft.Data.SqlClient.SqlParameter("@Remarks", water.Remarks ?? (object)DBNull.Value)
+                    );
+
                     _alertService.CheckWaterThresholds();
                     TempData["SuccessMessage"] = "Water consumption record updated successfully!";
                 }

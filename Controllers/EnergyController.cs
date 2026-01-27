@@ -26,7 +26,12 @@ namespace SHSOS.Controllers
         [HttpGet("api/energy")]
         public async Task<IActionResult> GetEnergyData(int? departmentId, DateTime? startDate, DateTime? endDate)
         {
-            var query = _context.EnergyConsumption.Include(e => e.Departments).AsQueryable();
+            var energyData = await _context.EnergyConsumption
+                .FromSqlRaw("SELECT * FROM snot.vw_EnergyConsumption")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var query = energyData.AsQueryable();
 
             if (departmentId.HasValue)
                 query = query.Where(e => e.DepartmentID == departmentId.Value);
@@ -37,8 +42,7 @@ namespace SHSOS.Controllers
             if (endDate.HasValue)
                 query = query.Where(e => e.ConsumptionDate <= endDate.Value);
 
-            var energyData = await query.OrderByDescending(e => e.ConsumptionDate).ToListAsync();
-            return Json(energyData);
+            return Json(query.OrderByDescending(e => e.ConsumptionDate).ToList());
         }
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
@@ -91,7 +95,12 @@ namespace SHSOS.Controllers
         // GET: Energy
         public async Task<IActionResult> Index(int? departmentId, DateTime? startDate, DateTime? endDate)
         {
-            var query = _context.EnergyConsumption.Include(e => e.Departments).AsQueryable();
+            var energyData = await _context.EnergyConsumption
+                .FromSqlRaw("SELECT * FROM snot.vw_EnergyConsumption")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var query = energyData.AsQueryable();
 
             if (departmentId.HasValue)
                 query = query.Where(e => e.DepartmentID == departmentId.Value);
@@ -107,7 +116,7 @@ namespace SHSOS.Controllers
             ViewBag.StartDate = startDate?.ToString("yyyy-MM-dd");
             ViewBag.EndDate = endDate?.ToString("yyyy-MM-dd");
 
-            var energyData = await query.OrderByDescending(e => e.ConsumptionDate).ToListAsync();
+            var results = query.OrderByDescending(e => e.ConsumptionDate).ToList();
 
             // Calculate summary statistics
             ViewBag.TotalUnits = energyData.Sum(e => e.UnitsConsumedkWh);
@@ -115,7 +124,7 @@ namespace SHSOS.Controllers
             ViewBag.TotalCarbon = energyData.Sum(e => e.CarbonEmissionsKg);
             ViewBag.PeakUsage = energyData.Where(e => e.PeakHourFlag).Sum(e => e.UnitsConsumedkWh);
 
-            return View(energyData);
+            return View(results);
         }
 
         // GET: Energy/Details/5
@@ -125,8 +134,8 @@ namespace SHSOS.Controllers
                 return NotFound();
 
             var energy = await _context.EnergyConsumption
-                .Include(e => e.Departments)
-                .ThenInclude(d => d.hospitals)
+                .FromSqlRaw("SELECT * FROM snot.vw_EnergyConsumption")
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.EnergyConsumptionID == id);
 
             if (energy == null)
@@ -195,12 +204,16 @@ namespace SHSOS.Controllers
             {
                 try
                 {
-                    // Recalculate derived fields
-                    energy.TotalCost = energy.UnitsConsumedkWh * energy.UnitCost;
-                    energy.CarbonEmissionsKg = energy.UnitsConsumedkWh * 0.5m;
+                    // Use Stored Procedure for updates
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC snot.usp_UpdateEnergy @EnergyConsumptionID, @UnitsConsumedkWh, @ConsumptionDate, @UsageCategory, @PeakHourFlag",
+                        new Microsoft.Data.SqlClient.SqlParameter("@EnergyConsumptionID", energy.EnergyConsumptionID),
+                        new Microsoft.Data.SqlClient.SqlParameter("@UnitsConsumedkWh", energy.UnitsConsumedkWh),
+                        new Microsoft.Data.SqlClient.SqlParameter("@ConsumptionDate", energy.ConsumptionDate),
+                        new Microsoft.Data.SqlClient.SqlParameter("@UsageCategory", energy.UsageCategory ?? (object)DBNull.Value),
+                        new Microsoft.Data.SqlClient.SqlParameter("@PeakHourFlag", energy.PeakHourFlag)
+                    );
 
-                    _context.Update(energy);
-                    await _context.SaveChangesAsync();
                     _alertService.CheckEnergyThresholds();
 
                     TempData["SuccessMessage"] = "Energy consumption record updated successfully!";

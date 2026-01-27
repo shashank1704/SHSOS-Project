@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, AlertTriangle, Info, CheckCircle } from 'lucide-react';
+import { BellRing, AlertTriangle, Info, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 
 const Alerts = () => {
@@ -24,7 +24,10 @@ const Alerts = () => {
         <div className="fade-in">
             <div className="row mb-4" style={{ marginBottom: '2rem' }}>
                 <div>
-                    <h1 style={{ fontWeight: 700, color: 'var(--primary)' }}>🔔 System Notifications</h1>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <BellRing size={32} color="var(--primary)" />
+                        <h1 style={{ fontWeight: 700, color: 'var(--primary)' }}>System Notifications</h1>
+                    </div>
                     <p style={{ color: 'var(--text-secondary)' }}>Critical alerts and operational messages</p>
                 </div>
             </div>

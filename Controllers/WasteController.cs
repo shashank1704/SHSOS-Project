@@ -26,7 +26,12 @@ namespace SHSOS.Controllers
         [HttpGet("api/waste")]
         public async Task<IActionResult> GetWasteData(int? departmentId, string wasteCategory)
         {
-            var query = _context.WasteManagement.Include(w => w.Departments).AsQueryable();
+            var wasteData = await _context.WasteManagement
+                .FromSqlRaw("SELECT * FROM snot.vw_WasteManagement")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var query = wasteData.AsQueryable();
 
             if (departmentId.HasValue)
                 query = query.Where(w => w.DepartmentID == departmentId.Value);
@@ -34,8 +39,7 @@ namespace SHSOS.Controllers
             if (!string.IsNullOrEmpty(wasteCategory))
                 query = query.Where(w => w.WasteCategory == wasteCategory);
 
-            var wasteData = await query.OrderByDescending(w => w.CollectionDate).ToListAsync();
-            return Json(wasteData);
+            return Json(query.OrderByDescending(w => w.CollectionDate).ToList());
         }
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
@@ -83,7 +87,12 @@ namespace SHSOS.Controllers
         // GET: Waste
         public async Task<IActionResult> Index(int? departmentId, string wasteCategory)
         {
-            var query = _context.WasteManagement.Include(w => w.Departments).AsQueryable();
+            var wasteData = await _context.WasteManagement
+                .FromSqlRaw("SELECT * FROM snot.vw_WasteManagement")
+                .AsNoTracking()
+                .ToListAsync();
+
+            var query = wasteData.AsQueryable();
 
             if (departmentId.HasValue)
                 query = query.Where(w => w.DepartmentID == departmentId.Value);
@@ -95,15 +104,15 @@ namespace SHSOS.Controllers
             ViewBag.SelectedDepartment = departmentId;
             ViewBag.WasteCategory = wasteCategory;
 
-            var wasteData = await query.OrderByDescending(w => w.CollectionDate).ToListAsync();
+            var results = query.OrderByDescending(w => w.CollectionDate).ToList();
 
             // Summary statistics
-            ViewBag.TotalWeight = wasteData.Sum(w => w.WasteWeight);
-            ViewBag.NonCompliantCount = wasteData.Count(w => w.ComplianceStatus != "Compliant");
-            ViewBag.TotalDisposalCost = wasteData.Sum(w => w.DisposalCost + w.DisinfectionCost);
+            ViewBag.TotalWeight = results.Sum(w => w.WasteWeight);
+            ViewBag.NonCompliantCount = results.Count(w => w.ComplianceStatus != "Compliant");
+            ViewBag.TotalDisposalCost = results.Sum(w => w.DisposalCost + w.DisinfectionCost);
             ViewBag.WasteByCategory = _analyticsService.GetWasteByCategory();
 
-            return View(wasteData);
+            return View(results);
         }
 
         // GET: Waste/Details/5
@@ -113,8 +122,8 @@ namespace SHSOS.Controllers
                 return NotFound();
 
             var waste = await _context.WasteManagement
-                .Include(w => w.Departments)
-                .ThenInclude(d => d.hospitals)
+                .FromSqlRaw("SELECT * FROM snot.vw_WasteManagement")
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.WasteRecordID == id);
 
             if (waste == null)
@@ -183,8 +192,16 @@ namespace SHSOS.Controllers
             {
                 try
                 {
-                    _context.Update(waste);
-                    await _context.SaveChangesAsync();
+                    // Use Stored Procedure for updates
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC snot.usp_UpdateWaste @WasteRecordID, @WasteType, @WasteWeight, @CollectionDate, @ComplianceStatus",
+                        new Microsoft.Data.SqlClient.SqlParameter("@WasteRecordID", waste.WasteRecordID),
+                        new Microsoft.Data.SqlClient.SqlParameter("@WasteType", waste.WasteType ?? (object)DBNull.Value),
+                        new Microsoft.Data.SqlClient.SqlParameter("@WasteWeight", waste.WasteWeight),
+                        new Microsoft.Data.SqlClient.SqlParameter("@CollectionDate", waste.CollectionDate),
+                        new Microsoft.Data.SqlClient.SqlParameter("@ComplianceStatus", waste.ComplianceStatus ?? (object)DBNull.Value)
+                    );
+
                     _alertService.CheckWasteCompliance();
                     TempData["SuccessMessage"] = "Waste management record updated successfully!";
                 }

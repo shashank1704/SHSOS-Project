@@ -16,6 +16,9 @@ namespace SHSOS.Models
         [ForeignKey(nameof(DepartmentID))]
         public Departments? Departments { get; set; }
 
+        [NotMapped]
+        public string? DepartmentName { get; set; }
+
         public string? WasteType { get; set; }
         public string? WasteCategory { get; set; }
         public decimal WasteWeight { get; set; }

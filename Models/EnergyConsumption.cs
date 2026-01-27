@@ -17,6 +17,9 @@ namespace SHSOS.Models
         [ForeignKey(nameof(DepartmentID))]
         public Departments? Departments { get; set; }
 
+        [NotMapped]
+        public string? DepartmentName { get; set; }
+
         public DateTime ConsumptionDate { get; set; }
         public TimeSpan ReadingTime { get; set; }
 

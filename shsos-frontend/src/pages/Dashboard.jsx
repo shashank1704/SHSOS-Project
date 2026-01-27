@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Droplets, Recycle, Globe, TrendingDown, Bell, Building2, BarChart3 } from 'lucide-react';
+import { Zap, Droplets, Recycle, Globe, TrendingDown, BellRing, Building2, BarChart3, ShieldCheck, LineChart } from 'lucide-react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import api from '../services/api';
@@ -118,9 +118,12 @@ const Dashboard = () => {
             {/* Page Header */}
             <div className="row mb-4">
                 <div style={{ background: 'white', borderRadius: '20px', padding: '2rem', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: 'var(--shadow-sm)' }}>
-                    <div>
-                        <h1 style={{ fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.25rem', letterSpacing: '-0.5px' }}>🌱 Sustainability Overview</h1>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: 0 }}>Real-time tracking of hospital environmental impact</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <ShieldCheck size={40} color="var(--primary)" />
+                        <div>
+                            <h1 style={{ fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.25rem', letterSpacing: '-0.5px' }}>Sustainability Overview</h1>
+                            <p style={{ color: 'var(--text-secondary)', marginBottom: 0 }}>Real-time tracking of hospital environmental impact</p>
+                        </div>
                     </div>
                     <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                         <div style={{ textAlign: 'right' }}>
@@ -155,7 +158,10 @@ const Dashboard = () => {
                     <div className="card" style={{ marginBottom: 0 }}>
                         <div className="card-header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                                <span style={{ fontWeight: 700 }}>📈 Resource Consumption Trends</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <LineChart size={20} color="var(--primary)" />
+                                    <span style={{ fontWeight: 700 }}>Resource Consumption Trends</span>
+                                </div>
                                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                                     <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', background: 'rgba(255, 107, 0, 0.1)', color: '#ff6b00', borderRadius: '20px', fontWeight: 600 }}>Energy</span>
                                     <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', background: 'rgba(52, 152, 219, 0.1)', color: '#3498db', borderRadius: '20px', fontWeight: 600 }}>Water</span>
@@ -169,13 +175,19 @@ const Dashboard = () => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                         <div className="card" style={{ marginBottom: 0 }}>
-                            <div className="card-header" style={{ fontSize: '0.9rem', borderBottom: 'none' }}>💧 Water Usage History</div>
+                            <div className="card-header" style={{ fontSize: '0.9rem', borderBottom: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <Droplets size={16} color="#3498db" />
+                                Water Usage History
+                            </div>
                             <div className="card-body" style={{ height: '180px', padding: '0 1rem 1rem' }}>
                                 <Line data={waterChartData} options={chartOptions} />
                             </div>
                         </div>
                         <div className="card" style={{ marginBottom: 0 }}>
-                            <div className="card-header" style={{ fontSize: '0.9rem', borderBottom: 'none' }}>♻️ Waste Generation</div>
+                            <div className="card-header" style={{ fontSize: '0.9rem', borderBottom: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <Recycle size={16} color="#9b59b6" />
+                                Waste Generation
+                            </div>
                             <div className="card-body" style={{ height: '180px', padding: '0 1rem 1rem' }}>
                                 <Line data={wasteChartData} options={chartOptions} />
                             </div>
@@ -186,7 +198,10 @@ const Dashboard = () => {
                 {/* Sidebar Info */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div className="card" style={{ marginBottom: 0 }}>
-                        <div className="card-header" style={{ fontWeight: 700 }}>🏥 Unit Efficiency</div>
+                        <div className="card-header" style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Building2 size={18} color="var(--primary)" />
+                            Unit Efficiency
+                        </div>
                         <div className="card-body" style={{ padding: '1.5rem' }}>
                             {data.sustainabilityScores.map((dept) => (
                                 <div key={dept.name} style={{ marginBottom: '1.5rem' }}>
@@ -216,7 +231,10 @@ const Dashboard = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <div className="card">
                     <div className="card-header" style={{ fontWeight: 700, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span>🔔 Recent Alerts</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <BellRing size={18} color="var(--primary)" />
+                            <span>Recent Alerts</span>
+                        </div>
                         <button style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }} onClick={() => navigate('/alerts')}>View All</button>
                     </div>
                     <div className="card-body" style={{ padding: 0 }}>
@@ -228,7 +246,7 @@ const Dashboard = () => {
                                         background: alert.severity === 'Critical' ? '#fff1f0' : '#fff7e6',
                                         color: alert.severity === 'Critical' ? '#cf1322' : '#d46b08'
                                     }}>
-                                        <Bell size={20} />
+                                        <BellRing size={20} />
                                     </div>
                                     <div>
                                         <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.25rem' }}>{alert.message}</div>
@@ -243,7 +261,10 @@ const Dashboard = () => {
                 </div>
 
                 <div className="card">
-                    <div className="card-header" style={{ fontWeight: 700 }}>⚡ Quick Actions</div>
+                    <div className="card-header" style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Zap size={18} color="var(--primary)" />
+                        Quick Actions
+                    </div>
                     <div className="card-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <QuickAction icon={<Zap size={20} />} label="Add Energy Reading" color="#ff6b00" onClick={() => navigate('/energy')} />
                         <QuickAction icon={<Droplets size={20} />} label="Log Water Usage" color="#3498db" onClick={() => navigate('/water')} />

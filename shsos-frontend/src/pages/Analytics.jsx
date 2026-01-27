@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, AlertTriangle, CheckCircle, Zap, Droplets, Trash2, Home, BarChart, PieChart, Activity, DollarSign } from 'lucide-react';
+import { BarChart3, TrendingUp, AlertTriangle, CheckCircle, Zap, Droplets, Trash2, Home, BarChart, PieChart, Activity, DollarSign, Activity as ActivityIcon, Target, Map } from 'lucide-react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -160,7 +160,10 @@ const Analytics = () => {
         <div className="fade-in">
             {/* Header */}
             <div className="mb-4">
-                <h1 style={{ fontWeight: 800, fontSize: '2rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>📈 Deeper Analytics</h1>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <BarChart3 size={32} color="var(--primary)" />
+                    <h1 style={{ fontWeight: 800, fontSize: '2rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Deeper Analytics</h1>
+                </div>
                 <p style={{ color: 'var(--text-secondary)' }}>Comprehensive breakdown of environmental and operational efficiency</p>
             </div>
 
@@ -206,7 +209,10 @@ const Analytics = () => {
                 {/* Main Trend Chart */}
                 <div className="card" style={{ marginBottom: 0 }}>
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span>📊 Resource Trends (30 Days)</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <TrendingUp size={18} color="var(--primary)" />
+                            Resource Trends (30 Days)
+                        </div>
                     </div>
                     <div className="card-body" style={{ height: '400px' }}>
                         <Line data={resourceTrendData} options={chartOptions} />
@@ -215,7 +221,10 @@ const Analytics = () => {
 
                 {/* Radar Chart Benchmarking */}
                 <div className="card" style={{ marginBottom: 0 }}>
-                    <div className="card-header">🎯 Efficiency Benchmarking</div>
+                    <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Target size={18} color="var(--primary)" />
+                        Efficiency Benchmarking
+                    </div>
                     <div className="card-body" style={{ height: '400px' }}>
                         <Radar data={deptComparisonData} options={radarOptions} />
                     </div>
@@ -225,7 +234,10 @@ const Analytics = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
                 {/* Waste Distribution */}
                 <div className="card" style={{ marginBottom: 0 }}>
-                    <div className="card-header">♻️ Waste Distribution</div>
+                    <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <PieChart size={18} color="var(--primary)" />
+                        Waste Distribution
+                    </div>
                     <div className="card-body" style={{ height: '350px', display: 'flex', justifyContent: 'center' }}>
                         <Doughnut data={wasteDistributionData} options={{ ...chartOptions, cutout: '70%' }} />
                     </div>
@@ -233,7 +245,10 @@ const Analytics = () => {
 
                 {/* Department Comparison */}
                 <div className="card" style={{ marginBottom: 0 }}>
-                    <div className="card-header">🏥 Regional Distribution</div>
+                    <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Map size={18} color="var(--primary)" />
+                        Regional Distribution
+                    </div>
                     <div className="card-body" style={{ height: '350px' }}>
                         <Bar data={deptEfficiencyData} options={{ ...chartOptions, indexAxis: 'y' }} />
                     </div>
