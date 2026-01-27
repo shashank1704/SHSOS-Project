@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ================= SERVICES =================
 
+// HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 // MVC
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
