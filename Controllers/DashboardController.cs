@@ -33,7 +33,6 @@ namespace SHSOS.Controllers
         {
             try 
             {
-                _alertService.SeedDummyAlerts();
                 var currentMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
                 var data = new

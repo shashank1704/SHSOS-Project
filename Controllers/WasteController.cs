@@ -12,11 +12,13 @@ namespace SHSOS.Controllers
     {
         private readonly SHSOSDbContext _context;
         private readonly AnalyticsService _analyticsService;
+        private readonly AlertService _alertService;
 
-        public WasteController(SHSOSDbContext context, AnalyticsService analyticsService)
+        public WasteController(SHSOSDbContext context, AnalyticsService analyticsService, AlertService alertService)
         {
             _context = context;
             _analyticsService = analyticsService;
+            _alertService = alertService;
         }
 
         // API Endpoints
@@ -45,6 +47,7 @@ namespace SHSOS.Controllers
                 waste.RecordedAt = DateTime.Now;
                 _context.Add(waste);
                 await _context.SaveChangesAsync();
+                _alertService.CheckWasteCompliance();
                 return Ok(waste);
             }
             return BadRequest(ModelState);
@@ -71,6 +74,7 @@ namespace SHSOS.Controllers
             {
                 _context.Update(waste);
                 await _context.SaveChangesAsync();
+                _alertService.CheckWasteCompliance();
                 return Ok(waste);
             }
             return BadRequest(ModelState);
@@ -136,6 +140,7 @@ namespace SHSOS.Controllers
                 waste.RecordedAt = DateTime.Now;
                 _context.Add(waste);
                 await _context.SaveChangesAsync();
+                _alertService.CheckWasteCompliance();
 
                 TempData["SuccessMessage"] = "Waste management record created successfully!";
 
@@ -180,6 +185,7 @@ namespace SHSOS.Controllers
                 {
                     _context.Update(waste);
                     await _context.SaveChangesAsync();
+                    _alertService.CheckWasteCompliance();
                     TempData["SuccessMessage"] = "Waste management record updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)

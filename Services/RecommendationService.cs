@@ -28,8 +28,8 @@ namespace SHSOS.Services
                 var topEnergyDept = energyByDept.OrderByDescending(d => d.Value).First();
                 recommendations.Add(new Recommendation
                 {
-                    Title = "Optimize Higher Energy Zones",
-                    Description = $"{topEnergyDept.Key} is consuming the most energy ({topEnergyDept.Value:N0} kWh). Consider auditing HVAC and lighting schedules in this area.",
+                    Title = "High Energy Use Found",
+                    Description = $"The {topEnergyDept.Key} team is using a lot of power ({topEnergyDept.Value:N0} kWh). Please check if lights or AC can be turned off when not needed.",
                     Category = "Energy",
                     Impact = "High"
                 });
@@ -41,8 +41,8 @@ namespace SHSOS.Services
             {
                 recommendations.Add(new Recommendation
                 {
-                    Title = "Immediate Leak Repair Required",
-                    Description = $"Detected {leakageCount} leakages in the last 7 days. Water loss is significant; prioritize plumbing maintenance.",
+                    Title = "Fix Water Leaks Now",
+                    Description = $"We found {leakageCount} leaks this week. Please call the plumber to fix them immediately to save water.",
                     Category = "Water",
                     Impact = "Critical"
                 });
@@ -51,8 +51,8 @@ namespace SHSOS.Services
             {
                 recommendations.Add(new Recommendation
                 {
-                    Title = "Water Efficiency",
-                    Description = "No leaks detected recently. Consider installing low-flow sensors to further optimize consumption.",
+                    Title = "Good Job on Water!",
+                    Description = "No leaks found lately. Keep up the good work and remember to turn off taps tightly.",
                     Category = "Water",
                     Impact = "Medium"
                 });
@@ -66,8 +66,8 @@ namespace SHSOS.Services
             {
                 recommendations.Add(new Recommendation
                 {
-                    Title = "Improve Waste Compliance",
-                    Description = $"There were {nonCompliantWaste} non-compliant waste instances this month. Schedule staff training on hazardous waste segregation.",
+                    Title = "Check Waste Sorting",
+                    Description = $"Some trash was not put in the right bins {nonCompliantWaste} times this month. Please remind everyone how to sort waste correctly.",
                     Category = "Waste",
                     Impact = "High"
                 });
@@ -79,8 +79,8 @@ namespace SHSOS.Services
             {
                 recommendations.Add(new Recommendation
                 {
-                    Title = "Carbon Reduction Opportunity",
-                    Description = $"Monthly emissions reached {totalCarbon:N0} kg Co2. Integrating solar-powered outdoor lighting can reduce this by 15%.",
+                    Title = "Help the Environment",
+                    Description = $"Our carbon score is {totalCarbon:N0} kg Co2. Switching to solar lights outside could help lower this number.",
                     Category = "Sustainability",
                     Impact = "Medium"
                 });

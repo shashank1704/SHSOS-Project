@@ -129,7 +129,19 @@ namespace SHSOS.Services
                                     !a.IsResolved);
 
             if (existingAlert != null)
-                return; // Don't create duplicate
+            {
+                // If the new severity is higher, or if the current value is significantly higher than before, update the alert
+                if (GetSeverityRank(severity) > GetSeverityRank(existingAlert.Severity) || actualValue > existingAlert.ActualValue)
+                {
+                    existingAlert.Severity = severity;
+                    existingAlert.Message = message;
+                    existingAlert.ActualValue = actualValue;
+                    existingAlert.ThresholdValue = thresholdValue;
+                    existingAlert.CreatedAt = DateTime.Now; // Update timestamp to show latest activity
+                    _context.SaveChanges();
+                }
+                return;
+            }
 
             var alert = new Alert
             {
@@ -145,6 +157,18 @@ namespace SHSOS.Services
 
             _context.Alerts.Add(alert);
             _context.SaveChanges();
+        }
+
+        private int GetSeverityRank(string severity)
+        {
+            return severity switch
+            {
+                "Critical" => 4,
+                "High" => 3,
+                "Medium" => 2,
+                "Low" => 1,
+                _ => 0
+            };
         }
 
         // ===== ALERT MANAGEMENT =====

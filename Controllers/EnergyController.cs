@@ -12,11 +12,13 @@ namespace SHSOS.Controllers
     {
         private readonly SHSOSDbContext _context;
         private readonly AnalyticsService _analyticsService;
+        private readonly AlertService _alertService;
 
-        public EnergyController(SHSOSDbContext context, AnalyticsService analyticsService)
+        public EnergyController(SHSOSDbContext context, AnalyticsService analyticsService, AlertService alertService)
         {
             _context = context;
             _analyticsService = analyticsService;
+            _alertService = alertService;
         }
 
         // API Endpoints
@@ -51,6 +53,7 @@ namespace SHSOS.Controllers
 
                 _context.Add(energy);
                 await _context.SaveChangesAsync();
+                _alertService.CheckEnergyThresholds();
                 return Ok(energy);
             }
             return BadRequest(ModelState);
@@ -79,6 +82,7 @@ namespace SHSOS.Controllers
                 energy.CarbonEmissionsKg = energy.UnitsConsumedkWh * 0.5m;
                 _context.Update(energy);
                 await _context.SaveChangesAsync();
+                _alertService.CheckEnergyThresholds();
                 return Ok(energy);
             }
             return BadRequest(ModelState);
@@ -155,6 +159,7 @@ namespace SHSOS.Controllers
 
                 _context.Add(energy);
                 await _context.SaveChangesAsync();
+                _alertService.CheckEnergyThresholds();
 
                 TempData["SuccessMessage"] = "Energy consumption record created successfully!";
                 return RedirectToAction(nameof(Index));
@@ -196,6 +201,7 @@ namespace SHSOS.Controllers
 
                     _context.Update(energy);
                     await _context.SaveChangesAsync();
+                    _alertService.CheckEnergyThresholds();
 
                     TempData["SuccessMessage"] = "Energy consumption record updated successfully!";
                 }

@@ -23,8 +23,6 @@ namespace SHSOS.Controllers
         [HttpGet("api/alerts")]
         public IActionResult GetAlerts()
         {
-            _alertService.SeedDummyAlerts();
-
             var alerts = _context.Alerts
                 .Include(a => a.Departments)
                 .OrderByDescending(a => a.CreatedAt)

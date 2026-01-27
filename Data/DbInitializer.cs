@@ -149,6 +149,53 @@ namespace SHSOS.Data
             };
             context.Alerts.AddRange(alerts);
             context.SaveChanges();
+
+            // ===== Resource Thresholds =====
+            if (!context.ResourceThreshold.Any())
+            {
+                foreach (var dept in departmentsList)
+                {
+                    // Energy Thresholds
+                    context.ResourceThreshold.Add(new ResourceThreshold
+                    {
+                        DepartmentID = dept.DepartmentID,
+                        ResourceType = "Energy",
+                        ThresholdName = "Daily Limit",
+                        WarningThreshold = 500,
+                        CriticalThreshold = 800,
+                        Unit = "kWh",
+                        IsActive = true,
+                        CreatedAt = DateTime.Now
+                    });
+
+                    // Water Thresholds
+                    context.ResourceThreshold.Add(new ResourceThreshold
+                    {
+                        DepartmentID = dept.DepartmentID,
+                        ResourceType = "Water",
+                        ThresholdName = "Daily Limit",
+                        WarningThreshold = 2000,
+                        CriticalThreshold = 3500,
+                        Unit = "Liters",
+                        IsActive = true,
+                        CreatedAt = DateTime.Now
+                    });
+
+                    // Waste Thresholds (since logic uses daily check, let's set a weight limit)
+                    context.ResourceThreshold.Add(new ResourceThreshold
+                    {
+                        DepartmentID = dept.DepartmentID,
+                        ResourceType = "Waste",
+                        ThresholdName = "Daily Weight",
+                        WarningThreshold = 100,
+                        CriticalThreshold = 200,
+                        Unit = "Kg",
+                        IsActive = true,
+                        CreatedAt = DateTime.Now
+                    });
+                }
+                context.SaveChanges();
+            }
         }
     }
 }

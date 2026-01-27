@@ -12,11 +12,13 @@ namespace SHSOS.Controllers
     {
         private readonly SHSOSDbContext _context;
         private readonly AnalyticsService _analyticsService;
+        private readonly AlertService _alertService;
 
-        public WaterController(SHSOSDbContext context, AnalyticsService analyticsService)
+        public WaterController(SHSOSDbContext context, AnalyticsService analyticsService, AlertService alertService)
         {
             _context = context;
             _analyticsService = analyticsService;
+            _alertService = alertService;
         }
 
         // API Endpoints
@@ -45,6 +47,7 @@ namespace SHSOS.Controllers
                 water.RecordedAt = DateTime.Now;
                 _context.Add(water);
                 await _context.SaveChangesAsync();
+                _alertService.CheckWaterThresholds();
                 return Ok(water);
             }
             return BadRequest(ModelState);
@@ -71,6 +74,7 @@ namespace SHSOS.Controllers
             {
                 _context.Update(water);
                 await _context.SaveChangesAsync();
+                _alertService.CheckWaterThresholds();
                 return Ok(water);
             }
             return BadRequest(ModelState);
@@ -135,6 +139,7 @@ namespace SHSOS.Controllers
                 water.RecordedAt = DateTime.Now;
                 _context.Add(water);
                 await _context.SaveChangesAsync();
+                _alertService.CheckWaterThresholds();
 
                 TempData["SuccessMessage"] = "Water consumption record created successfully!";
                 
@@ -179,6 +184,7 @@ namespace SHSOS.Controllers
                 {
                     _context.Update(water);
                     await _context.SaveChangesAsync();
+                    _alertService.CheckWaterThresholds();
                     TempData["SuccessMessage"] = "Water consumption record updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
