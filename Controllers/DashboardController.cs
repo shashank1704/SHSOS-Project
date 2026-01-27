@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SHSOS.Controllers
 {
-    [Microsoft.AspNetCore.Authorization.Authorize]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     public class DashboardController : Controller
     {
         private readonly SHSOSDbContext _context;
@@ -28,12 +28,12 @@ namespace SHSOS.Controllers
             _sustainabilityService = sustainabilityService;
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("api/dashboard/data")]
         public IActionResult GetData()
         {
             try 
             {
+                _alertService.SeedDummyAlerts();
                 var currentMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
                 var data = new
@@ -62,7 +62,6 @@ namespace SHSOS.Controllers
             }
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpGet("api/departments")]
         public IActionResult GetDepartments()
         {

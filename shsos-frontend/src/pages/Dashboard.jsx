@@ -4,6 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import { Line } from 'react-chartjs-2';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import Recommendations from '../components/Recommendations';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
@@ -130,6 +131,13 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Recommendations Section */}
+            <div className="row mb-4">
+                <div className="col-12">
+                    <Recommendations />
                 </div>
             </div>
 

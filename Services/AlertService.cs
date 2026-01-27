@@ -15,6 +15,24 @@ namespace SHSOS.Services
             _context = context;
         }
 
+        public void SeedDummyAlerts()
+        {
+            if (!_context.Alerts.Any())
+            {
+                var depts = _context.Departments.Take(2).ToList();
+                if (depts.Any())
+                {
+                    _context.Alerts.AddRange(new List<Alert>
+                    {
+                        new Alert { DepartmentID = depts[0].DepartmentID, AlertType = "Energy", Severity = "High", Message = $"High energy spike detected in {depts[0].DepartmentName}", CreatedAt = DateTime.Now.AddHours(-2), IsResolved = false },
+                        new Alert { DepartmentID = depts.Last().DepartmentID, AlertType = "Water", Severity = "Critical", Message = $"Unusual water flow in {depts.Last().DepartmentName} - Potential Leak", CreatedAt = DateTime.Now.AddHours(-5), IsResolved = false },
+                        new Alert { DepartmentID = depts[0].DepartmentID, AlertType = "Waste", Severity = "Medium", Message = "Hazardous waste bin #4 needs attention", CreatedAt = DateTime.Now.AddDays(-1), IsResolved = true }
+                    });
+                    _context.SaveChanges();
+                }
+            }
+        }
+
         // ===== CHECK AND CREATE ALERTS =====
 
         public void CheckEnergyThresholds()

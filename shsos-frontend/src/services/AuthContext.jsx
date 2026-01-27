@@ -8,18 +8,38 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        try {
-            const storedUser = localStorage.getItem('shsos_user');
-            const token = localStorage.getItem('shsos_token');
-            if (storedUser && token && storedUser !== "undefined") {
-                setUser(JSON.parse(storedUser));
+        const initializeAuth = async () => {
+            try {
+                const storedUser = localStorage.getItem('shsos_user');
+                const token = localStorage.getItem('shsos_token');
+
+                if (storedUser && token && storedUser !== "undefined" && storedUser !== "null") {
+                    // VERIFY TOKEN VALIDITY BY CALLING A PROTECTED ENDPOINT
+                    try {
+                        await api.get('/api/departments'); // Lightweight check
+                        const parsedUser = JSON.parse(storedUser);
+                        if (parsedUser && typeof parsedUser === 'object') {
+                            setUser(parsedUser);
+                        } else {
+                            throw new Error("Invalid user data format");
+                        }
+                    } catch (tokenErr) {
+                        console.warn("Session invalid or expired. Clearing data.");
+                        localStorage.removeItem('shsos_user');
+                        localStorage.removeItem('shsos_token');
+                        setUser(null);
+                    }
+                } else {
+                    setUser(null);
+                }
+            } catch (e) {
+                console.error("Auth Initialization Error:", e);
+                setUser(null);
+            } finally {
+                setLoading(false);
             }
-        } catch (e) {
-            console.error("Error loading user from localStorage", e);
-            localStorage.removeItem('shsos_user');
-            localStorage.removeItem('shsos_token');
-        }
-        setLoading(false);
+        };
+        initializeAuth();
     }, []);
 
     const login = async (username, password) => {

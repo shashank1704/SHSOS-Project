@@ -9,8 +9,8 @@ const Alerts = () => {
     useEffect(() => {
         const fetchAlerts = async () => {
             try {
-                const response = await api.get('/api/dashboard/data'); // Using dashboard data for now
-                setAlerts(response.data.activeAlerts);
+                const response = await api.get('/api/alerts');
+                setAlerts(response.data);
             } catch (error) {
                 console.error('Error fetching alerts:', error);
             } finally {
@@ -38,15 +38,17 @@ const Alerts = () => {
                                 <tr>
                                     <th>Severity</th>
                                     <th>Type</th>
+                                    <th>Department</th>
                                     <th>Message</th>
                                     <th>Time</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>Loading alerts...</td></tr>
+                                    <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Loading alerts...</td></tr>
                                 ) : alerts.length === 0 ? (
-                                    <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No active alerts.</td></tr>
+                                    <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>No active alerts.</td></tr>
                                 ) : (
                                     alerts.map((alert) => (
                                         <tr key={alert.alertID}>
@@ -55,18 +57,31 @@ const Alerts = () => {
                                                     <span style={{
                                                         height: '10px',
                                                         width: '10px',
-                                                        background: alert.severity === 'Critical' ? '#e74c3c' : '#f1c40f',
+                                                        background: alert.severity === 'Critical' ? '#e74c3c' : alert.severity === 'High' ? '#f39c12' : '#3498db',
                                                         borderRadius: '50%'
                                                     }}></span>
-                                                    <span style={{ fontWeight: 700, color: alert.severity === 'Critical' ? '#e74c3c' : '#f1c40f' }}>
+                                                    <span style={{ fontWeight: 700, color: alert.severity === 'Critical' ? '#e74c3c' : alert.severity === 'High' ? '#f39c12' : '#3498db' }}>
                                                         {alert.severity}
                                                     </span>
                                                 </div>
                                             </td>
                                             <td><strong>{alert.alertType}</strong></td>
+                                            <td><span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{alert.departmentName}</span></td>
                                             <td>{alert.message}</td>
-                                            <td style={{ color: 'var(--text-secondary)' }}>
+                                            <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                                                 {new Date(alert.createdAt).toLocaleString()}
+                                            </td>
+                                            <td>
+                                                <span style={{
+                                                    padding: '2px 8px',
+                                                    borderRadius: '12px',
+                                                    fontSize: '0.75rem',
+                                                    background: alert.isResolved ? 'rgba(46, 204, 113, 0.1)' : 'rgba(231, 76, 60, 0.1)',
+                                                    color: alert.isResolved ? '#2ecc71' : '#e74c3c',
+                                                    fontWeight: 600
+                                                }}>
+                                                    {alert.isResolved ? 'Resolved' : 'Active'}
+                                                </span>
                                             </td>
                                         </tr>
                                     ))

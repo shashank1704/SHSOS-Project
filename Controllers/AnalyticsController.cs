@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SHSOS.Controllers
 {
-    [Microsoft.AspNetCore.Authorization.Authorize]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     public class AnalyticsController : Controller
     {
         private readonly SHSOSDbContext _context;
@@ -95,6 +95,36 @@ namespace SHSOS.Controllers
             {
                 labels = wasteByCategory.Keys.ToArray(),
                 values = wasteByCategory.Values.ToArray()
+            });
+        }
+        [HttpGet("api/analytics/summary")]
+        public IActionResult GetSummary()
+        {
+            var energyTrend = _analyticsService.GetEnergyTrend(30);
+            var waterTrend = _analyticsService.GetWaterTrend(30);
+            var wasteTrend = _analyticsService.GetWasteTrend(30);
+
+            var energyByDept = _analyticsService.GetEnergyByDepartment();
+            var waterByDept = _analyticsService.GetWaterByDepartment();
+            var wasteByCat = _analyticsService.GetWasteByCategory();
+
+            return Json(new
+            {
+                trends = new {
+                    energy = energyTrend.Select(t => new { t.Date, t.Value }),
+                    water = waterTrend.Select(t => new { t.Date, t.Value }),
+                    waste = wasteTrend.Select(t => new { t.Date, t.Value })
+                },
+                distribution = new {
+                    energy = energyByDept,
+                    water = waterByDept,
+                    waste = wasteByCat
+                },
+                metrics = new {
+                    totalEnergyCost = _analyticsService.GetTotalEnergyCost(),
+                    totalWasteCost = _analyticsService.GetTotalWasteCost(),
+                    totalCarbon = _analyticsService.GetTotalCarbonEmissions()
+                }
             });
         }
     }

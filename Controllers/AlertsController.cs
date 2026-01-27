@@ -2,19 +2,50 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SHSOS.Data;
 using SHSOS.Services;
+using SHSOS.Models;
 
 namespace SHSOS.Controllers
 {
-    [Microsoft.AspNetCore.Authorization.Authorize]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     public class AlertsController : Controller
     {
         private readonly SHSOSDbContext _context;
         private readonly AlertService _alertService;
+        private readonly RecommendationService _recommendationService;
 
-        public AlertsController(SHSOSDbContext context, AlertService alertService)
+        public AlertsController(SHSOSDbContext context, AlertService alertService, RecommendationService recommendationService)
         {
             _context = context;
             _alertService = alertService;
+            _recommendationService = recommendationService;
+        }
+
+        [HttpGet("api/alerts")]
+        public IActionResult GetAlerts()
+        {
+            _alertService.SeedDummyAlerts();
+
+            var alerts = _context.Alerts
+                .Include(a => a.Departments)
+                .OrderByDescending(a => a.CreatedAt)
+                .Select(a => new {
+                    a.AlertID,
+                    a.AlertType,
+                    a.Severity,
+                    a.Message,
+                    a.CreatedAt,
+                    a.IsResolved,
+                    DepartmentName = a.Departments != null ? a.Departments.DepartmentName : "System"
+                })
+                .ToList();
+            return Json(alerts);
+        }
+
+        [HttpGet("api/recommendations")]
+        public IActionResult GetRecommendations()
+        {
+            var recs = _recommendationService.GetRecommendations();
+            return Json(recs);
         }
 
         // GET: Alerts

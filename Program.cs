@@ -29,10 +29,16 @@ builder.Services.AddCors(options =>
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(options =>
+.AddCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/Login";
+})
+.AddJwtBearer(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, options =>
 {
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
@@ -55,6 +61,7 @@ builder.Services.AddScoped<AnalyticsService>();
 builder.Services.AddScoped<PredictionService>();
 builder.Services.AddScoped<AlertService>();
 builder.Services.AddScoped<SustainabilityService>();
+builder.Services.AddScoped<RecommendationService>();
 
 var app = builder.Build();
 
