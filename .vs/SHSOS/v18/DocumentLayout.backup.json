@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\New folder\\SHSOS\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|c:\\new folder\\shsos\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|solutionrelative:controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|c:\\new folder\\shsos\\models\\waterconsumption.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|solutionrelative:models\\waterconsumption.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|c:\\new folder\\shsos\\controllers\\wastecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|solutionrelative:controllers\\wastecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|c:\\new folder\\shsos\\shsos-frontend\\src\\app.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{5864DE0D-69FE-46F2-B896-98BFB010F22A}|SHSOS.csproj|solutionrelative:shsos-frontend\\src\\app.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
@@ -26,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,7 +46,44 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DashboardController.cs",
+              "DocumentMoniker": "C:\\New folder\\SHSOS\\Controllers\\DashboardController.cs",
+              "RelativeDocumentMoniker": "Controllers\\DashboardController.cs",
+              "ToolTip": "C:\\New folder\\SHSOS\\Controllers\\DashboardController.cs",
+              "RelativeToolTip": "Controllers\\DashboardController.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-28T09:05:32.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "WaterConsumption.cs",
+              "DocumentMoniker": "C:\\New folder\\SHSOS\\Models\\WaterConsumption.cs",
+              "RelativeDocumentMoniker": "Models\\WaterConsumption.cs",
+              "ToolTip": "C:\\New folder\\SHSOS\\Models\\WaterConsumption.cs",
+              "RelativeToolTip": "Models\\WaterConsumption.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-27T13:58:04.769Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WasteController.cs",
+              "DocumentMoniker": "C:\\New folder\\SHSOS\\Controllers\\WasteController.cs",
+              "RelativeDocumentMoniker": "Controllers\\WasteController.cs",
+              "ToolTip": "C:\\New folder\\SHSOS\\Controllers\\WasteController.cs",
+              "RelativeToolTip": "Controllers\\WasteController.cs",
+              "ViewState": "AgIAALUAAAAAAAAAAADwv+0AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-27T13:57:08.379Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\New folder\\SHSOS\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -46,7 +95,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "EnergyController.cs",
               "DocumentMoniker": "C:\\New folder\\SHSOS\\Controllers\\EnergyController.cs",
               "RelativeDocumentMoniker": "Controllers\\EnergyController.cs",
@@ -58,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "Login.jsx",
               "DocumentMoniker": "C:\\New folder\\SHSOS\\shsos-frontend\\src\\pages\\Login.jsx",
               "RelativeDocumentMoniker": "shsos-frontend\\src\\pages\\Login.jsx",
@@ -70,7 +119,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "App.jsx",
               "DocumentMoniker": "C:\\New folder\\SHSOS\\shsos-frontend\\src\\App.jsx",
               "RelativeDocumentMoniker": "shsos-frontend\\src\\App.jsx",
@@ -78,8 +127,7 @@
               "RelativeToolTip": "shsos-frontend\\src\\App.jsx",
               "ViewState": "AgIAAAwAAAAAAAAAAAAqwBIAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2026-01-24T15:06:43.253Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-24T15:06:43.253Z"
             }
           ]
         }

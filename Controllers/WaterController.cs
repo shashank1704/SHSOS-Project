@@ -48,7 +48,8 @@ namespace SHSOS.Controllers
         {
             if (ModelState.IsValid)
             {
-                water.RecordedAt = DateTime.Now;
+                //water.RecordedAt = DateTime.Now;
+                water.RecordedAt = DateTime.UtcNow.AddMinutes(330);
                 _context.Add(water);
                 await _context.SaveChangesAsync();
                 _alertService.CheckWaterThresholds();
