@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, AlertTriangle, CheckCircle, Zap, Droplets, Trash2, Home, BarChart, PieChart, Activity, DollarSign, Activity as ActivityIcon, Target, Map } from 'lucide-react';
+import { BarChart3, TrendingUp, AlertTriangle, CheckCircle, Zap, Droplets, Trash2, Home, BarChart, PieChart, Activity, Activity as ActivityIcon, Target, Map } from 'lucide-react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -177,14 +177,14 @@ const Analytics = () => {
                 <SquareStatCard
                     icon={<Zap size={24} />}
                     label="Energy Cost"
-                    value={`$${data.metrics.totalEnergyCost.toLocaleString()}`}
+                    value={`₹${data.metrics.totalEnergyCost.toLocaleString()}`}
                     color="#ff6b00"
                     bg="rgba(255, 107, 0, 0.1)"
                 />
                 <SquareStatCard
                     icon={<Trash2 size={24} />}
                     label="Waste Cost"
-                    value={`$${data.metrics.totalWasteCost.toLocaleString()}`}
+                    value={`₹${data.metrics.totalWasteCost.toLocaleString()}`}
                     color="#9b59b6"
                     bg="rgba(155, 89, 182, 0.1)"
                 />

@@ -15,21 +15,35 @@ namespace SHSOS.Services
             _context = context;
         }
 
-        public void SeedDummyAlerts()
+        // ===== CLEANUP ALERTS =====
+        
+        public void PurgeInvalidAlerts()
         {
-            if (!_context.Alerts.Any())
+            // This method removes alerts that were manually seeded or no longer match threshold conditions
+            var activeAlerts = _context.Alerts.Where(a => !a.IsResolved).ToList();
+            var thresholds = _context.ResourceThreshold.ToList();
+            
+            var alertsToRemove = new List<Alert>();
+
+            foreach (var alert in activeAlerts)
             {
-                var depts = _context.Departments.Take(2).ToList();
-                if (depts.Any())
+                // Never purge leakage alerts as they are event-based, not threshold-sum-based
+                if (alert.AlertType == "Water" && alert.Message?.Contains("leakage", StringComparison.OrdinalIgnoreCase) == true)
+                    continue;
+
+                var threshold = thresholds.FirstOrDefault(t => t.DepartmentID == alert.DepartmentID && t.ResourceType == alert.AlertType);
+                
+                // If no threshold exists for this type/dept, or if the actual value is below the warning threshold, mark for removal
+                if (threshold == null || alert.ActualValue < threshold.WarningThreshold)
                 {
-                    _context.Alerts.AddRange(new List<Alert>
-                    {
-                        new Alert { DepartmentID = depts[0].DepartmentID, AlertType = "Energy", Severity = "High", Message = $"High energy spike detected in {depts[0].DepartmentName}", CreatedAt = DateTime.Now.AddHours(-2), IsResolved = false },
-                        new Alert { DepartmentID = depts.Last().DepartmentID, AlertType = "Water", Severity = "Critical", Message = $"Unusual water flow in {depts.Last().DepartmentName} - Potential Leak", CreatedAt = DateTime.Now.AddHours(-5), IsResolved = false },
-                        new Alert { DepartmentID = depts[0].DepartmentID, AlertType = "Waste", Severity = "Medium", Message = "Hazardous waste bin #4 needs attention", CreatedAt = DateTime.Now.AddDays(-1), IsResolved = true }
-                    });
-                    _context.SaveChanges();
+                    alertsToRemove.Add(alert);
                 }
+            }
+
+            if (alertsToRemove.Any())
+            {
+                _context.Alerts.RemoveRange(alertsToRemove);
+                _context.SaveChanges();
             }
         }
 

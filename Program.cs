@@ -66,7 +66,10 @@ builder.Services.AddScoped<AlertService>();
 builder.Services.AddScoped<SustainabilityService>();
 builder.Services.AddScoped<RecommendationService>();
 
+
 var app = builder.Build();
+
+
 
 // ================= MIDDLEWARE =================
 

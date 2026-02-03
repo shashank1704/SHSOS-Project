@@ -125,29 +125,7 @@ namespace SHSOS.Data
             context.SaveChanges();
 
             // Alerts
-            var cardiology = departmentsList.First(d => d.DepartmentName == "Cardiology");
-            var radiology = departmentsList.First(d => d.DepartmentName == "Radiology");
-
-            var alerts = new Alert[]
-            {
-                new Alert { 
-                    DepartmentID = cardiology.DepartmentID,
-                    AlertType = "Energy", 
-                    Severity = "High", 
-                    Message = "Sudden spike in Cardiology energy usage.", 
-                    IsResolved = false, 
-                    CreatedAt = DateTime.Now 
-                },
-                new Alert { 
-                    DepartmentID = radiology.DepartmentID,
-                    AlertType = "Water", 
-                    Severity = "Critical", 
-                    Message = "Leak detected in Radiology - B Block.", 
-                    IsResolved = false, 
-                    CreatedAt = DateTime.Now 
-                }
-            };
-            context.Alerts.AddRange(alerts);
+            // Note: Alerts are now generated dynamically based on consumption and thresholds.
             context.SaveChanges();
 
             // ===== Resource Thresholds =====

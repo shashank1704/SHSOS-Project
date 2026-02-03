@@ -45,11 +45,7 @@ const Login = () => {
                     </div>
                 )}
 
-                <div style={{ background: '#e6f7ff', border: '1px solid #91d5ff', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.8125rem', color: '#0050b3' }}>
-                    <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>Demo Credentials:</div>
-                    <div>Username: <strong>admin</strong></div>
-                    <div>Password: <strong>Admin@123</strong></div>
-                </div>
+               
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group" style={{ marginBottom: '1.25rem' }}>
