@@ -1,0 +1,123 @@
+@model SHSOS.Models.EnergyConsumption
+
+@{
+    ViewData["Title"] = "Energy Reading Details";
+}
+
+<div class="fade-in">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="font-weight: 700;">⚡ Energy Reading Details</h1>
+        <a asp-action="Index" class="btn btn-outline-primary">← Back to List</a>
+    </div>
+
+    <div class="row">
+        <!-- Main Details Card -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 style="margin: 0;">Consumption Information</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl>
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Department</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">
+                                    @Model.Departments?.DepartmentName
+                                    <span style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 400;">
+                                        (@Model.Departments?.hospitals?.HospitalName)
+                                    </span>
+                                </dd>
+
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Consumption Date</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">@Model.ConsumptionDate.ToString("MMMM dd, yyyy")</dd>
+
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Reading Time</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">@Model.ReadingTime</dd>
+
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Meter Reading Start</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0;">@Model.MeterReadingStart</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl>
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Units Consumed</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">@Model.UnitsConsumedkWh kWh</dd>
+
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Unit Cost</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">₹@Model.UnitCost</dd>
+
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Usage Category</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem;">
+                                    <span class="badge" style="background: @(Model.UsageCategory == "High" ? "rgba(231, 76, 60, 0.1)" : "rgba(39, 174, 96, 0.1)"); color: @(Model.UsageCategory == "High" ? "#e74c3c" : "#27ae60"); padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                        @Model.UsageCategory
+                                    </span>
+                                </dd>
+
+                                <dt style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Peak Hour Usage</dt>
+                                <dd style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0;">
+                                    @if (Model.PeakHourFlag)
+                                    {
+                                        <span style="color: #e74c3c;">✓ Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: var(--text-secondary);">✗ No</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Statistics Card -->
+        <div class="col-md-4">
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header" style="background: rgba(255, 107, 0, 0.1); border-bottom-color: var(--primary);">
+                    <h4 style="margin: 0; color: var(--primary);">💰 Cost Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Total Cost</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary);">₹@Model.TotalCost</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header" style="background: rgba(46, 204, 113, 0.1); border-bottom-color: #2ecc71;">
+                    <h4 style="margin: 0; color: #2ecc71;">🌍 Environmental Impact</h4>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Carbon Emissions</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: #2ecc71;">@Model.CarbonEmissionsKg</div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Kg CO₂</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" style="background: var(--bg-main);">
+                    <h4 style="margin: 0; color: var(--text-secondary);">📊 Comparison</h4>
+                </div>
+                <div class="card-body">
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">30-Day Average</div>
+                        <div style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">@ViewBag.MonthlyAverage</div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">kWh</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <a asp-action="Edit" asp-route-id="@Model.EnergyConsumptionID" class="btn btn-primary">✏️ Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.EnergyConsumptionID" class="btn btn-outline" style="border-color: #e74c3c; color: #e74c3c;">🗑️ Delete</a>
+        <a asp-action="Index" class="btn btn-outline-primary" style="margin-left: auto;">← Back to List</a>
+    </div>
+</div>

@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SHSOS.Models
 {
+    
+[Table("EnergyConsumption", Schema = "snot")]
     public class EnergyConsumption
     {
         [Key]
@@ -13,7 +15,10 @@ namespace SHSOS.Models
         public int DepartmentID { get; set; }
 
         [ForeignKey(nameof(DepartmentID))]
-        public Departments Departments { get; set; }
+        public Departments? Departments { get; set; }
+
+        [NotMapped]
+        public string? DepartmentName { get; set; }
 
         public DateTime ConsumptionDate { get; set; }
         public TimeSpan ReadingTime { get; set; }
@@ -22,7 +27,7 @@ namespace SHSOS.Models
         public decimal UnitsConsumedkWh { get; set; }
 
         public decimal UnitCost { get; set; }
-        public string UsageCategory { get; set; }
+        public string? UsageCategory { get; set; }
         public bool PeakHourFlag { get; set; }
 
         public decimal TotalCost { get; set; }

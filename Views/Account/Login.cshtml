@@ -1,0 +1,47 @@
+@model SHSOS.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout"; // Use the layout which handles the non-auth case
+}
+
+<div class="login-page">
+    <div class="login-card fade-in">
+        <div class="login-header">
+            <h1>🌱 SHSOS</h1>
+            <p style="color: var(--text-secondary);">Sustainable Hospital Management</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" style="margin-bottom: 1rem; font-size: 0.875rem;"></div>
+
+            <div class="form-group">
+                <label asp-for="Username" class="form-label">Username</label>
+                <input asp-for="Username" class="form-control" placeholder="Enter your username" autofocus />
+                <span asp-validation-for="Username" class="text-danger" style="font-size: 0.75rem;"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger" style="font-size: 0.75rem;"></span>
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: -0.5rem;">
+                <input asp-for="RememberMe" id="RememberMe" />
+                <label for="RememberMe" class="form-label" style="margin-bottom: 0; cursor: pointer;">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.8rem;">
+                Sign In
+            </button>
+        </form>
+
+        <div style="margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--text-secondary);">
+            <p>Demo credentials: <strong>Admin / Admin@123</strong></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

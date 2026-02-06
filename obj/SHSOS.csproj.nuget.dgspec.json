@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj": {}
+    "C:\\New folder\\SHSOS\\SHSOS.csproj": {}
   },
   "projects": {
-    "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj": {
+    "C:\\New folder\\SHSOS\\SHSOS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj",
+        "projectUniqueName": "C:\\New folder\\SHSOS\\SHSOS.csproj",
         "projectName": "SHSOS",
-        "projectPath": "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\SHSOS.csproj",
+        "projectPath": "C:\\New folder\\SHSOS\\SHSOS.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Shashank Projects\\Data\\Project1\\SHSOS\\obj\\",
+        "outputPath": "C:\\New folder\\SHSOS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -50,6 +50,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[8.0.10, )"
